@@ -1,7 +1,7 @@
 package com.soma.coinviewer.data.di
 
-import com.soma.coinviewer.data.repository.WebSocketRepositoryImpl
-import com.soma.coinviewer.domain.repository.WebSocketRepository
+import com.soma.coinviewer.data.repository.BinanceRepositoryImpl
+import com.soma.coinviewer.domain.repository.BinanceRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,6 +15,6 @@ interface RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindsWebSocketRepository(
-        webSocketRepositoryImpl: WebSocketRepositoryImpl
-    ): WebSocketRepository
+        webSocketRepositoryImpl: BinanceRepositoryImpl
+    ): BinanceRepository
 }

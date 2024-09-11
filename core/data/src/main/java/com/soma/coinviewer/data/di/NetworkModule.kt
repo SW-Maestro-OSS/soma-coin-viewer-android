@@ -1,12 +1,14 @@
 package com.soma.coinviewer.data.di
 
-import com.soma.coinviewer.data.datasource.WebSocketDataSourceImpl
-import com.soma.coinviewer.domain.datasource.WebSocketDataSource
+import com.soma.coinviewer.data.datasource.BinanceDataSourceImpl
+import com.soma.coinviewer.domain.datasource.BinanceDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocket
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -32,15 +34,20 @@ object NetworkModule {
     ) : OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
-//            .readTimeout(30, TimeUnit.SECONDS)
-//            .writeTimeout(30, TimeUnit.SECONDS)
-//            .pingInterval(30, TimeUnit.SECONDS)
             .build()
     }
 
     @Provides
     @Singleton
-    fun preSignedUrlDataSource(client: OkHttpClient): WebSocketDataSource {
-        return WebSocketDataSourceImpl(client)
+    fun provideWebSocket() : Request {
+        return Request.Builder()
+            .url(BINANCE_BASE_URL)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun binanceDataSource(okHttpClient: OkHttpClient, request: Request): BinanceDataSource {
+        return BinanceDataSourceImpl(okHttpClient, request)
     }
 }
