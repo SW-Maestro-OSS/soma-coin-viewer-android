@@ -1,5 +1,6 @@
 package com.soma.coinviewer.feature.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.domain.entity.BinanceOrderBookMessage
@@ -31,11 +32,14 @@ class HomeViewModel @Inject constructor(
             )
         )
         viewModelScope.launch {
-            binanceRepository.sendMessage(messageSample)
+            try {
+                val response = binanceRepository.sendMessage(messageSample)
+                _homeUiState.value = response ?: "No response"
+            } catch (e: Exception) {
+                Log.e("Error", "Failed to send message: ${e.message}")
+            } finally {
+                binanceRepository.disconnect()
+            }
         }
-    }
-
-    fun disconnectBinance() {
-        binanceRepository.disconnect()
     }
 }

@@ -12,6 +12,8 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class BinanceDataSourceImpl @Inject constructor(
     private val okHttpClient: OkHttpClient,
@@ -20,6 +22,7 @@ class BinanceDataSourceImpl @Inject constructor(
 
     private var webSocket: WebSocket? = null
     private var listener: WebSocketListener? = null
+    private var messageCallback: ((String) -> Unit)? = null
 
     override fun connect() {
         listener = object : WebSocketListener() {
@@ -32,6 +35,9 @@ class BinanceDataSourceImpl @Inject constructor(
                 super.onMessage(webSocket, text)
 
                 Log.d("WebSocket onMessage text", text)
+
+                // 받은 메시지를 콜백으로 전달 --- 테스트를 위한 임시방편입니다!!!
+                messageCallback?.invoke(text)
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -58,11 +64,20 @@ class BinanceDataSourceImpl @Inject constructor(
         listener = null
     }
 
-    override fun sendMessage(message: BinanceOrderBookMessage) {
-        Log.d("send Message Test", webSocket?.send(
-            Gson()
-                .toJson(message)
-                .toString()
-        ).toString())
+    override suspend fun sendMessage(message: BinanceOrderBookMessage): String? {
+        return suspendCoroutine { continuation ->
+            messageCallback = { receivedMessage ->
+                continuation.resume(receivedMessage) // onMessage의 text를 반환
+            }
+
+            val jsonMessage = Gson().toJson(message)
+            val isSuccess = webSocket?.send(jsonMessage)
+
+            Log.d("send Message Test", isSuccess.toString())
+
+            if (isSuccess == false) {
+                continuation.resumeWith(Result.failure(Exception("Failed to send message")))
+            }
+        }
     }
 }

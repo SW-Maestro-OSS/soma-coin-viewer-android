@@ -5,5 +5,5 @@ import com.soma.coinviewer.domain.entity.BinanceOrderBookMessage
 interface BinanceDataSource {
     fun connect()
     fun disconnect()
-    fun sendMessage(message: BinanceOrderBookMessage)
+    suspend fun sendMessage(message: BinanceOrderBookMessage): String?
 }

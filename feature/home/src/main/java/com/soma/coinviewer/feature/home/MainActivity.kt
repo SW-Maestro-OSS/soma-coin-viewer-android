@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -17,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -62,28 +64,16 @@ class MainActivity : ComponentActivity(){
                 .fillMaxSize()
         ) {
             Text(text = "Hello CoinViewer")
+            Text(text = "Binance Order book Test Response입니다!!")
 
-            Text(text = viewModel.homeUiState.value)
+            Spacer(
+                modifier = Modifier
+                    .height(10.dp)
+            )
+
+            Text(text = viewModel.homeUiState.collectAsState().value)
 
             Spacer(modifier = Modifier.weight(1f))
-
-            Surface(
-                onClick = { viewModel.disconnectBinance() },
-                color = Color.Blue,
-                contentColor = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 10.dp)
-            ) {
-                Text(
-                    text = "Web Socket 연결 끊기",
-                    fontSize = 15.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 15.dp)
-                        .wrapContentWidth()
-                )
-            }
         }
     }
 }

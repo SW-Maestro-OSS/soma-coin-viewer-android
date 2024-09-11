@@ -13,6 +13,8 @@ class BinanceRepositoryImpl @Inject constructor(
 
     override fun disconnect() = webSocketDataSource.disconnect()
 
-    override fun sendMessage(message: BinanceOrderBookMessage) = webSocketDataSource.sendMessage(message)
+    override suspend fun sendMessage(message: BinanceOrderBookMessage): String? {
+        return webSocketDataSource.sendMessage(message)
+    }
 
 }
