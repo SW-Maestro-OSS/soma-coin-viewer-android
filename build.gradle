@@ -19,6 +19,23 @@ buildscript {
 
         // Dependency Injection
         hilt_version = "2.51.1"
+
+        // View System
+        androidx_core_version = "1.10.0"
+        androidx_appcompat_version = "1.6.1"
+        meterial_version = "1.12.0"
+        constraintlayout_version = "2.1.4"
+        navigation_version = "2.5.3"
+
+        // activity
+        activity_version = "1.6.1"
+
+        // Compose
+        compose_version = "1.5.1"
+        compose_bom_date = "2024.06.00"
+        activity_compose_version = "1.9.0"
+        meterial3_version = "0.28.0"
+        navigation_compose_version = "2.7.7"
     }
 }
 

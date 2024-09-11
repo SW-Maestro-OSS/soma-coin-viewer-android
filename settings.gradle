@@ -21,3 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "CoinViewer"
 include ':app'
+include ':core:domain'
+include ':core:data'
+include ':feature:home'
