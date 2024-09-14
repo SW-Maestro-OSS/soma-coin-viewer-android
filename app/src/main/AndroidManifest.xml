@@ -19,7 +19,7 @@
         tools:targetApi="34">
 
         <activity
-            android:name="com.soma.coinviewer.feature.home.MainActivity"
+            android:name="com.soma.coinviewer.presentation.MainActivity"
             android:exported="true">
 
             <intent-filter>
