@@ -17,7 +17,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    const val BINANCE_BASE_URL = "wss://ws-api.binance.com:443/ws-api/v3"
+    private const val BINANCE_BASE_URL = "wss://ws-api.binance.com:443/ws-api/v3"
 
     // 로깅인터셉터 세팅
     @Provides
