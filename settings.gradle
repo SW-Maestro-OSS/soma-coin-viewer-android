@@ -23,5 +23,6 @@ rootProject.name = "CoinViewer"
 include ':app'
 include ':core:domain'
 include ':core:data'
+include ':core:common-ui'
 include ':presentation'
 include ':feature:home'

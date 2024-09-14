@@ -4,7 +4,6 @@ import android.util.Log
 import com.google.gson.Gson
 import com.soma.coinviewer.domain.datasource.BinanceDataSource
 import com.soma.coinviewer.domain.entity.BinanceOrderBookMessage
-import com.soma.coinviewer.domain.entity.BinanceOrderBookParams
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
