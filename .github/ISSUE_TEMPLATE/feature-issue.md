@@ -2,7 +2,7 @@
 name: Feature Issue
 about: 기능 이슈 템플릿
 title: "[FEAT] 기능 설명"
-labels: "✨ feature"
+labels: "📱 feature"
 assignees: ''
 
 ---
