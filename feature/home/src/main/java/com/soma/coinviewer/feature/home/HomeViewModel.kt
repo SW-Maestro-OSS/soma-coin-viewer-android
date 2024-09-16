@@ -1,5 +1,6 @@
 package com.soma.coinviewer.feature.home
 
+import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
 import com.soma.coinviewer.domain.entity.BinanceOrderBookMessage
 import com.soma.coinviewer.domain.entity.BinanceOrderBookParams
@@ -7,6 +8,7 @@ import com.soma.coinviewer.domain.repository.BinanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,7 +31,7 @@ class HomeViewModel @Inject constructor(
             )
         )
 
-        launchCoroutine {
+        viewModelScope.launch(exceptionHandler) {
             try {
                 val response = binanceRepository.sendMessage(messageSample)
                 _homeUiState.value = response ?: "No response"
