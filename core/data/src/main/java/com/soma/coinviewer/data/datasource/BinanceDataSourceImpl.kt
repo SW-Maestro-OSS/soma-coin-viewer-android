@@ -58,7 +58,7 @@ class BinanceDataSourceImpl @Inject constructor(
     }
 
     override fun disconnect() {
-        webSocket?.cancel()
+        webSocket?.close(1000, "Close Binance")
         webSocket = null
         listener = null
     }
