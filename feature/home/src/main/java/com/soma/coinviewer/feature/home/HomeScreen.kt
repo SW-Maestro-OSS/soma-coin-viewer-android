@@ -4,7 +4,9 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,8 +20,6 @@ fun HomeScreen() {
     val viewModel: HomeViewModel = ViewModelProvider(
         LocalContext.current as ComponentActivity
     ).get(HomeViewModel::class.java)
-
-    viewModel.testBinance()
 
     Column (
         modifier = Modifier
@@ -36,5 +36,26 @@ fun HomeScreen() {
         Text(text = viewModel.homeUiState.collectAsState().value)
 
         Spacer(modifier = Modifier.weight(1f))
+
+        Button(
+            onClick = { viewModel.testBinance() },
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(text = "Binance Connect")
+        }
+
+        Spacer(
+            modifier = Modifier
+                .height(5.dp)
+        )
+
+        Button(
+            onClick = { viewModel.testDisconnectBinance() },
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(text = "Binance Disconnect")
+        }
     }
 }

@@ -2,7 +2,6 @@ package com.soma.coinviewer.data.datasource
 
 import android.util.Log
 import com.google.gson.Gson
-import com.soma.coinviewer.domain.datasource.BinanceDataSource
 import com.soma.coinviewer.domain.entity.BinanceOrderBookMessage
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -14,16 +13,16 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class BinanceDataSourceImpl @Inject constructor(
+class BinanceDataSource @Inject constructor(
     private val okHttpClient: OkHttpClient,
     private val request: Request
-) : BinanceDataSource {
+) {
 
     private var webSocket: WebSocket? = null
     private var listener: WebSocketListener? = null
     private var messageCallback: ((String) -> Unit)? = null
 
-    override fun connect() {
+    fun connect() {
         listener = object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
@@ -57,13 +56,13 @@ class BinanceDataSourceImpl @Inject constructor(
         webSocket = okHttpClient.newWebSocket(request, listener as WebSocketListener)
     }
 
-    override fun disconnect() {
+    fun disconnect() {
         webSocket?.close(1000, "Close Binance")
         webSocket = null
         listener = null
     }
 
-    override suspend fun sendMessage(message: BinanceOrderBookMessage): String? {
+    suspend fun sendMessage(message: BinanceOrderBookMessage): String? {
         return suspendCoroutine { continuation ->
             messageCallback = { receivedMessage ->
                 continuation.resume(receivedMessage) // onMessage의 text를 반환

@@ -1,16 +1,13 @@
 package com.soma.coinviewer.data.di
 
-import com.soma.coinviewer.data.datasource.BinanceDataSourceImpl
-import com.soma.coinviewer.domain.datasource.BinanceDataSource
+import com.soma.coinviewer.data.datasource.BinanceDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.WebSocket
 import okhttp3.logging.HttpLoggingInterceptor
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -48,6 +45,6 @@ object NetworkModule {
     @Provides
     @Singleton
     fun binanceDataSource(okHttpClient: OkHttpClient, request: Request): BinanceDataSource {
-        return BinanceDataSourceImpl(okHttpClient, request)
+        return BinanceDataSource(okHttpClient, request)
     }
 }

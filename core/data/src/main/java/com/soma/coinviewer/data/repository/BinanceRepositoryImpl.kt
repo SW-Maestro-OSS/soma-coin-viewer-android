@@ -1,6 +1,6 @@
 package com.soma.coinviewer.data.repository
 
-import com.soma.coinviewer.domain.datasource.BinanceDataSource
+import com.soma.coinviewer.data.datasource.BinanceDataSource
 import com.soma.coinviewer.domain.entity.BinanceOrderBookMessage
 import com.soma.coinviewer.domain.repository.BinanceRepository
 import javax.inject.Inject
