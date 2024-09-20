@@ -2,7 +2,7 @@ package com.soma.coinviewer.data.datasource
 
 import android.util.Log
 import com.google.gson.Gson
-import com.soma.coinviewer.domain.entity.BinanceOrderBookMessage
+import com.soma.coinviewer.domain.entity.BinanceMessage
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -62,12 +62,14 @@ class BinanceDataSource @Inject constructor(
         listener = null
     }
 
-    suspend fun sendMessage(message: BinanceOrderBookMessage): String? {
+    suspend fun sendMessage(message: BinanceMessage): String? {
         return suspendCoroutine { continuation ->
-            messageCallback = { receivedMessage ->
-                continuation.resume(receivedMessage) // onMessage의 text를 반환
+            messageCallback = { responseMessage ->
+                // Responses are returned as JSON in text frames, one response per frame.
+                continuation.resume(responseMessage) // onMessage의 text를 반환
             }
 
+            // Requests must be sent as JSON in text frames, one request per frame.
             val jsonMessage = Gson().toJson(message)
             val isSuccess = webSocket?.send(jsonMessage)
 

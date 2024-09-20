@@ -3,8 +3,8 @@ package com.soma.coinviewer.feature.home
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
-import com.soma.coinviewer.domain.entity.BinanceOrderBookMessage
-import com.soma.coinviewer.domain.entity.BinanceOrderBookParams
+import com.soma.coinviewer.domain.entity.BinanceMessage
+import com.soma.coinviewer.domain.entity.OrderBookParams
 import com.soma.coinviewer.domain.repository.BinanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,10 +23,10 @@ class HomeViewModel @Inject constructor(
     fun testBinance() {
         binanceRepository.connect()
 
-        val messageSample = BinanceOrderBookMessage(
+        val messageSample = BinanceMessage(
             id = "51e2affb-0aba-4821-ba75-f2625006eb43",
             method = "depth",
-            params = BinanceOrderBookParams(
+            params = OrderBookParams(
                 symbol = "BNBBTC",
                 limit = 5
             )
