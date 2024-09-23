@@ -47,6 +47,7 @@ buildscript {
 
         // LifeCycle
         lifecycle_viewmodel_version = "2.4.0"
+        lifecycle_runtime_compose_version = "2.6.1"
     }
 }
 

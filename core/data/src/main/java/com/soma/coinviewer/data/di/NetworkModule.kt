@@ -1,6 +1,5 @@
 package com.soma.coinviewer.data.di
 
-import com.soma.coinviewer.data.datasource.BinanceDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +13,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BINANCE_BASE_URL = "wss://ws-api.binance.com:443/ws-api/v3"
+    private const val BINANCE_API_BASE_URL = "wss://ws-api.binance.com:443/ws-api/v3"
+    private const val BINANCE_STREAM_BASE_URL = "wss://stream.binance.com:9443/ws/@trade"
 
     // 로깅인터셉터 세팅
     @Provides
@@ -38,13 +38,7 @@ object NetworkModule {
     @Singleton
     fun provideWebSocket() : Request {
         return Request.Builder()
-            .url(BINANCE_BASE_URL)
+            .url(BINANCE_STREAM_BASE_URL)
             .build()
-    }
-
-    @Provides
-    @Singleton
-    fun binanceDataSource(okHttpClient: OkHttpClient, request: Request): BinanceDataSource {
-        return BinanceDataSource(okHttpClient, request)
     }
 }

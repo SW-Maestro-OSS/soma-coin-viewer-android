@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun HomeScreen() {
@@ -33,7 +34,7 @@ fun HomeScreen() {
                 .height(10.dp)
         )
 
-        Text(text = viewModel.homeUiState.collectAsState().value)
+        Text(text = viewModel.homeUiState.collectAsStateWithLifecycle().value ?: "")
 
         Spacer(modifier = Modifier.weight(1f))
 

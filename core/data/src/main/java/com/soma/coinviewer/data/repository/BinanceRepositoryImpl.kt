@@ -1,8 +1,9 @@
 package com.soma.coinviewer.data.repository
 
 import com.soma.coinviewer.data.datasource.BinanceDataSource
-import com.soma.coinviewer.domain.entity.BinanceOrderBookMessage
+import com.soma.coinviewer.domain.entity.BinanceMessage
 import com.soma.coinviewer.domain.repository.BinanceRepository
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 class BinanceRepositoryImpl @Inject constructor(
@@ -13,8 +14,11 @@ class BinanceRepositoryImpl @Inject constructor(
 
     override fun disconnect() = webSocketDataSource.disconnect()
 
-    override suspend fun sendMessage(message: BinanceOrderBookMessage): String? {
+    override fun sendMessage(message: BinanceMessage): Boolean {
         return webSocketDataSource.sendMessage(message)
     }
 
+    override fun subscribeWebSocketData(): StateFlow<String?> {
+        return webSocketDataSource.subscribeWebSocket()
+    }
 }
