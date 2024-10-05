@@ -44,7 +44,4 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
-    // AndroidX AppCompat
-    implementation(libs.androidx.appcompat)
 }

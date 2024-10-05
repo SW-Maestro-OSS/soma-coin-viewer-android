@@ -45,12 +45,13 @@ android {
 }
 
 dependencies {
-    // UI
+    // Xml
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.navigation.ui)
+
+    // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.andriodx.compose.compiler)
     implementation(libs.androidx.lifecycle.runtimeCompose)
