@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler.gradle.plugin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    id("kotlin-kapt") // for DataBinding
 }
 
 android {
@@ -34,35 +34,23 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+        dataBinding = true
     }
 }
 
 dependencies {
     implementation(project(":core:domain"))
-    implementation(project(":feature:home"))
-
-    // Test
-    testImplementation(libs.junit4)
-    androidTestImplementation(libs.androidx.junit)
 
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    // Compose and UI
-    implementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.material3)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.lifecycle.runtimeCompose)
-    implementation(libs.andriodx.compose.compiler)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
+
+    // Test
+    testImplementation(libs.junit4)
+    androidTestImplementation(libs.androidx.junit)
 }
