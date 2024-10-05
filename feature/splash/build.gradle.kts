@@ -44,6 +44,9 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewModel)
     ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.core.ktx)

@@ -88,6 +88,8 @@ ktlint = "12.1.1"
 
 # https://coil-kt.github.io/coil/#jetpack-compose
 coil = "2.7.0"
+legacySupportV4 = "1.0.0"
+lifecycleLivedataKtx = "2.8.6"
 
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
@@ -143,6 +145,8 @@ coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutin
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutine" }
 
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 
 [bundles]
 

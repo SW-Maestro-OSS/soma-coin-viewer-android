@@ -2,7 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_main"
-    app:startDestination="@id/nav_home">
+    app:startDestination="@id/splashFragment">
 
     <include app:graph="@navigation/nav_home" />
+    <include app:graph="@navigation/nav_setting" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.soma.coinviewer.feature.splash.SplashFragment"
+        android:label="SplashFragment" />
 </navigation>
