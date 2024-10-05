@@ -10,11 +10,13 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 
-abstract class BaseBindingFragment<T: ViewDataBinding>(
+abstract class BaseBindingFragment<T : ViewDataBinding, V : BaseViewModel>(
     @LayoutRes private val layoutId: Int
 ) : Fragment() {
-    protected var _binding: T? = null
+    private var _binding: T? = null
     protected val binding get() = _binding ?: throw IllegalStateException("Binding is not initialized")
+
+    protected abstract val fragmentViewModel: V
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,21 +24,8 @@ abstract class BaseBindingFragment<T: ViewDataBinding>(
         savedInstanceState: Bundle?
     ): View? {
         _binding = DataBindingUtil.inflate(inflater, layoutId, container, false)
+        binding.lifecycleOwner = this.viewLifecycleOwner
         return _binding?.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.lifecycleOwner = this@BaseBindingFragment
-        lifecycleScope.launchWhenCreated {
-            initView()
-        }
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    abstract suspend fun initView()
-
-    protected inline fun bind(block: T.() -> Unit) {
-        binding.apply(block)
     }
 
     override fun onDestroyView() {

@@ -41,9 +41,6 @@ android {
 dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:common-ui"))
-    implementation(project(":feature:home"))
-    implementation(project(":feature:setting"))
-    implementation(project(":feature:splash"))
 
     // Hilt
     implementation(libs.hilt.android)
