@@ -11,6 +11,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -20,9 +21,9 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "CoinViewer"
-include ':app'
-include ':core:domain'
-include ':core:data'
-include ':core:common-ui'
-include ':presentation'
-include ':feature:home'
+include(":app")
+include(":core:domain")
+include(":core:data")
+include(":core:common-ui")
+include(":presentation")
+include(":feature:home")
