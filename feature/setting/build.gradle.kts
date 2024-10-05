@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.soma.coinviewer.presentation"
+    namespace = "com.soma.coinviewer.feature.setting"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

@@ -17,7 +17,7 @@ import com.soma.coinviewer.common_ui.base.BaseComposeFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-internal class HomeFragment : BaseComposeFragment() {
+class HomeFragment : BaseComposeFragment() {
     override val fragmentViewModel: HomeViewModel by viewModels()
 
     @Composable
