@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.soma.coinviewer.presentation.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,16 +29,15 @@ class MainActivity : AppCompatActivity() {
         setNavigation()
     }
 
-    private fun setNavigation() {
-        binding.apply {
-            val navHostFragment =
-                supportFragmentManager.findFragmentById(R.id.main_FCV) as NavHostFragment
-            navController = navHostFragment.navController
-            mainBNV.itemIconTintList = null
-        }
+    private fun setNavigation() = binding.apply {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.main_FCV) as NavHostFragment
+        navController = navHostFragment.navController
+        binding.mainBNV.setupWithNavController(navController)
+        mainBNV.itemIconTintList = null
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.mainBNV.visibility = if (destination.id in hideBottomNavDestinationIds) {
+            mainBNV.visibility = if (destination.id in hideBottomNavDestinationIds) {
                 View.GONE
             } else {
                 View.VISIBLE
