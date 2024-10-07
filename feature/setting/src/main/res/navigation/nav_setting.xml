@@ -8,6 +8,6 @@
         android:id="@+id/settingFragment"
         android:name="com.soma.coinviewer.feature.setting.SettingFragment"
         android:label="SettingFragment" >
-        <deepLink app:uri="soma://setting"/>
+        <deepLink app:uri="@string/deeplink_setting"/>
     </fragment>
 </navigation>

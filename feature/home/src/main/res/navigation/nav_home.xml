@@ -8,6 +8,6 @@
         android:id="@+id/homeFragment"
         android:name="com.soma.coinviewer.feature.home.HomeFragment"
         android:label="HomeFragment" >
-        <deepLink app:uri="soma://home"/>
+        <deepLink app:uri="@string/deeplink_home"/>
     </fragment>
 </navigation>
