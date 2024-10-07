@@ -4,39 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 
-abstract class BaseBindingFragment<T: ViewDataBinding>(
-    @LayoutRes private val layoutId: Int
-) : Fragment() {
-    protected var _binding: T? = null
-    protected val binding get() = _binding ?: throw IllegalStateException("Binding is not initialized")
+typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
+
+abstract class BaseBindingFragment<T : ViewDataBinding, V : BaseViewModel>
+    (private val inflate: Inflate<T>) : Fragment() {
+
+    private var _binding: T? = null
+    protected val binding
+        get() = _binding ?: throw IllegalStateException("Binding is not initialized")
+
+    protected abstract val fragmentViewModel: V
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
-        _binding = DataBindingUtil.inflate(inflater, layoutId, container, false)
-        return _binding?.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.lifecycleOwner = this@BaseBindingFragment
-        lifecycleScope.launchWhenCreated {
-            initView()
-        }
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    abstract suspend fun initView()
-
-    protected inline fun bind(block: T.() -> Unit) {
-        binding.apply(block)
+        _binding = inflate.invoke(inflater, container, false)
+        binding.lifecycleOwner = this.viewLifecycleOwner
+        return binding.root
     }
 
     override fun onDestroyView() {

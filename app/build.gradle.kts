@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    id("kotlin-kapt") // for DataBinding
 }
 
 android {
@@ -33,6 +34,10 @@ android {
 
     kotlinOptions {
         jvmTarget = libs.versions.jvmTarget.get()
+    }
+
+    buildFeatures{
+        dataBinding = true
     }
 }
 

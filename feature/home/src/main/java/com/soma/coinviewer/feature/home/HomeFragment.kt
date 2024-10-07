@@ -1,6 +1,5 @@
 package com.soma.coinviewer.feature.home
 
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,20 +8,42 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.soma.coinviewer.common_ui.base.BaseComposeFragment
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class HomeFragment : BaseComposeFragment() {
+    override val fragmentViewModel: HomeViewModel by viewModels()
+
+    @Composable
+    override fun ComposeLayout() {
+        fragmentViewModel.apply {
+            val uiState by homeUiState.collectAsStateWithLifecycle()
+
+            fragmentViewModel.apply {
+                HomeScreen(
+                    uiState = uiState ?: "",
+                    test = ::testBinance,
+                    testDisconnect = ::testDisconnectBinance,
+                )
+            }
+        }
+    }
+}
+
 
 @Composable
-fun HomeScreen() {
-    val viewModel: HomeViewModel = ViewModelProvider(
-        LocalContext.current as ComponentActivity
-    ).get(HomeViewModel::class.java)
-
-    Column (
+private fun HomeScreen(
+    uiState: String,
+    test: () -> Unit,
+    testDisconnect: () -> Unit,
+) {
+    Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
@@ -34,12 +55,12 @@ fun HomeScreen() {
                 .height(10.dp)
         )
 
-        Text(text = viewModel.homeUiState.collectAsStateWithLifecycle().value ?: "")
+        Text(text = uiState)
 
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = { viewModel.testBinance() },
+            onClick = test,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -52,7 +73,7 @@ fun HomeScreen() {
         )
 
         Button(
-            onClick = { viewModel.testDisconnectBinance() },
+            onClick = testDisconnect,
             modifier = Modifier
                 .fillMaxWidth()
         ) {

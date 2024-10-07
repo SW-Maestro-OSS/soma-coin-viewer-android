@@ -1,19 +1,20 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler.gradle.plugin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    id("kotlin-kapt") // for DataBinding
 }
 
 android {
-    namespace = "com.soma.coinviewer.feature.home"
+    namespace = "com.soma.coinviewer.feature.splash"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -33,38 +34,31 @@ android {
     }
 
     buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+        dataBinding = true
     }
 }
 
 dependencies {
-    implementation(project(":core:common-ui"))
     implementation(project(":core:domain"))
-
-    // Test
-    testImplementation(libs.junit4)
-    androidTestImplementation(libs.androidx.junit)
+    implementation(project(":core:common-ui"))
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewModel)
     ksp(libs.hilt.compiler)
 
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
 
-    // Compose
-    implementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.material3)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.lifecycle.runtimeCompose)
-    implementation(libs.andriodx.compose.compiler)
+    // Test
+    testImplementation(libs.junit4)
+    androidTestImplementation(libs.androidx.junit)
 }

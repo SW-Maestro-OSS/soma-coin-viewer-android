@@ -7,6 +7,7 @@ import com.soma.coinviewer.domain.repository.BinanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,7 +16,7 @@ class HomeViewModel @Inject constructor(
     private val binanceRepository: BinanceRepository
 ) : BaseViewModel() {
     private val _homeUiState = MutableStateFlow<String?>("")
-    val homeUiState: StateFlow<String?> = _homeUiState
+    val homeUiState = _homeUiState.asStateFlow()
 
 
     fun testBinance() {
