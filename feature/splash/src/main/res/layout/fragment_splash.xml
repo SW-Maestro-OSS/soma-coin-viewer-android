@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.soma.coinviewer.feature.splash.SplashViewModel" />
@@ -13,10 +15,25 @@
         android:layout_height="match_parent"
         tools:context="com.soma.coinviewer.feature.splash.SplashFragment">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Splash" />
+        <ImageView
+            android:id="@+id/splash_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/splash_icon_description"
+            android:src="@drawable/ic_coin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/splash_logo"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/splash_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
