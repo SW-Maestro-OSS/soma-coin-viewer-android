@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="splash_icon_description">동전 아이콘입니다.</string>
+    <string name="splash_logo">Coin Viewer</string>
+</resources>
