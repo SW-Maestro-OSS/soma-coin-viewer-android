@@ -11,37 +11,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="50dp"
         android:background="@color/white"
         android:orientation="vertical"
         tools:context="com.soma.coinviewer.feature.setting.SettingFragment">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/layout_price_currency"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/text_price_currency"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
                 android:text="@string/setting_price_currency"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
 
-            <LinearLayout
-                android:id="@+id/layout_toggle_price_currency"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/layout_switch_price_currency"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true">
+                android:layout_weight="2">
 
                 <RelativeLayout
-                    android:id="@+id/layout_toggle_money_price_currency"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/layout_label_price_currency"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
@@ -51,12 +53,13 @@
                         android:text="@string/setting_dollar"
                         android:textColor="@color/neutral_700"
                         android:textSize="15sp"
-                        android:layout_alignLeft="@id/text_line"/>
+                        android:layout_toLeftOf="@id/text_line_price_currency"/>
 
                     <TextView
-                        android:id="@+id/text_line"
+                        android:id="@+id/text_line_price_currency"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="2dp"
                         android:text="|"
                         android:textColor="@color/neutral_700"
                         android:textSize="15sp"
@@ -69,22 +72,143 @@
                         android:text="@string/setting_won"
                         android:textColor="@color/neutral_700"
                         android:textSize="15sp"
-                        android:layout_alignRight="@id/text_line"
-                        android:layout_alignParentEnd="true"/>
+                        android:layout_toRightOf="@id/text_line_price_currency"/>
 
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/text_test"
+                <Switch
+                    android:id="@+id/switch_price_currency"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="test"
-                    android:textColor="@color/neutral_700"
-                    android:textSize="15sp" />
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/layout_label_price_currency"/>
 
-            </LinearLayout>
+            </RelativeLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"/>
+
+        <LinearLayout
+            android:id="@+id/layout_language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_language"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/setting_language"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+
+            <RelativeLayout
+                android:id="@+id/layout_switch_language"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2">
+
+                <RelativeLayout
+                    android:id="@+id/layout_label_language"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/text_english"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_english"
+                        android:textColor="@color/neutral_700"
+                        android:textSize="15sp"
+                        android:layout_toLeftOf="@id/text_line_language"/>
+
+                    <TextView
+                        android:id="@+id/text_line_language"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="2dp"
+                        android:text="|"
+                        android:textColor="@color/neutral_700"
+                        android:textSize="15sp"
+                        android:layout_centerHorizontal="true"/>
+
+                    <TextView
+                        android:id="@+id/text_korean"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_korean"
+                        android:textColor="@color/neutral_700"
+                        android:textSize="15sp"
+                        android:layout_toRightOf="@id/text_line_language"/>
+
+                </RelativeLayout>
+
+                <Switch
+                    android:id="@+id/switch_language"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/layout_label_language"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"/>
+
+        <LinearLayout
+            android:id="@+id/layout_show_symbol_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_show_symbol_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/setting_show_symbol_grid"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+
+            <RelativeLayout
+                android:id="@+id/layout_switch_show_symbol_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="2">
+
+                <Switch
+                    android:id="@+id/switch_show_symbol_grid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"/>
 
     </LinearLayout>
+
 </layout>
