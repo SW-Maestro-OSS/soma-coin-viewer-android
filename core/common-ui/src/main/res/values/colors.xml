@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="neutral_900">#131417</color>
+    <color name="neutral_800">#2A2C34</color>
+    <color name="neutral_700">#3F4350</color>
+    <color name="neutral_600">#575C6B</color>
+    <color name="neutral_500">#7C8394</color>
+    <color name="neutral_400">#A2A8B7</color>
+    <color name="neutral_300">#C3C8D4</color>
+    <color name="neutral_200">#DCDFE7</color>
+    <color name="neutral_100">#ECEEF4</color>
+    <color name="neutral_50">#F8F9FB</color>
+
+</resources>

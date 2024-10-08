@@ -8,15 +8,83 @@
             type="com.soma.coinviewer.feature.setting.SettingViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
         tools:context="com.soma.coinviewer.feature.setting.SettingFragment">
 
-        <TextView
+        <RelativeLayout
+            android:id="@+id/layout_price_currency"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Setting" />
+            android:layout_height="wrap_content">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/text_price_currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/setting_price_currency"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:id="@+id/layout_toggle_price_currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true">
+
+                <RelativeLayout
+                    android:id="@+id/layout_toggle_money_price_currency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/text_dollar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_dollar"
+                        android:textColor="@color/neutral_700"
+                        android:textSize="15sp"
+                        android:layout_alignLeft="@id/text_line"/>
+
+                    <TextView
+                        android:id="@+id/text_line"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="|"
+                        android:textColor="@color/neutral_700"
+                        android:textSize="15sp"
+                        android:layout_centerHorizontal="true"/>
+
+                    <TextView
+                        android:id="@+id/text_won"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_won"
+                        android:textColor="@color/neutral_700"
+                        android:textSize="15sp"
+                        android:layout_alignRight="@id/text_line"
+                        android:layout_alignParentEnd="true"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/text_test"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="test"
+                    android:textColor="@color/neutral_700"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 </layout>

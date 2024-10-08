@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- setting -->
+    <string name="setting_price_currency">Price Currency Unit</string>
+    <string name="setting_dollar">Dollar</string>
+    <string name="setting_won">Won</string>
+    <string name="setting_language">Language</string>
+    <string name="setting_english">English</string>
+    <string name="setting_korean">Korean</string>
+    <string name="setting_show_symbol_grid">Show symbols with 2x2 grid</string>
+</resources>
