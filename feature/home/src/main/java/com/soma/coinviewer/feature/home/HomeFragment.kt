@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,8 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.soma.coinviewer.common_ui.base.BaseComposeFragment
+import com.soma.coinviewer.domain.entity.BinanceTickerData
 import dagger.hilt.android.AndroidEntryPoint
+import java.math.BigDecimal
 
 @AndroidEntryPoint
 class HomeFragment : BaseComposeFragment() {
@@ -35,10 +40,12 @@ class HomeFragment : BaseComposeFragment() {
     override fun ComposeLayout() {
         fragmentViewModel.apply {
             val listSortType by listSortType.collectAsStateWithLifecycle()
+            val coinData by coinData.collectAsStateWithLifecycle()
 
             fragmentViewModel.apply {
                 HomeScreen(
                     listSortType = listSortType,
+                    coinData = coinData,
                     setListSortType = ::setListSortType,
                 )
             }
@@ -49,6 +56,7 @@ class HomeFragment : BaseComposeFragment() {
 @Composable
 private fun HomeScreen(
     listSortType: ListSortType,
+    coinData: List<BinanceTickerData>,
     setListSortType: (ListSortType) -> Unit,
 ) {
     Scaffold(containerColor = Color.White) { paddingValues ->
@@ -68,7 +76,8 @@ private fun HomeScreen(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                         .clickable {
                             val newListSortType = when (listSortType) {
                                 ListSortType.SYMBOL_ASC -> ListSortType.SYMBOL_DESC
@@ -100,7 +109,8 @@ private fun HomeScreen(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                         .clickable {
                             val newListSortType = when (listSortType) {
                                 ListSortType.PRICE_ASC -> ListSortType.PRICE_DESC
@@ -166,8 +176,61 @@ private fun HomeScreen(
             }
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
+                itemsIndexed(
+                    items = coinData,
+                    key = { idx, data -> data.symbol },
+                ) { idx, data ->
+                    CoinItem(data)
 
+                    if (idx != 29) {
+                        HorizontalDivider(color = Color.DarkGray)
+                    }
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun CoinItem(coinData: BinanceTickerData) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(30.dp),
+    ) {
+        AsyncImage(
+            model = "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32/icon/btc.png",
+            placeholder = painterResource(R.drawable.ic_updown),
+            contentDescription = "",
+        )
+
+        Text(
+            text = coinData.symbol,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.weight(1f),
+        )
+
+        Text(
+            text = coinData.price.toPlainString(),
+            fontSize = 14.sp,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.weight(1f),
+        )
+
+        val priceChangePercentColor = if (coinData.priceChangePercent >= BigDecimal(0.0)) {
+            Color.Green
+        } else {
+            Color.Red
+        }
+
+        Text(
+            text = coinData.priceChangePercent.toString(),
+            fontSize = 14.sp,
+            textAlign = TextAlign.Start,
+            color = priceChangePercentColor,
+            modifier = Modifier.weight(1f),
+        )
     }
 }

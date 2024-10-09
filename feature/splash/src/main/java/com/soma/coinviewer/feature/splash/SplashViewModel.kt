@@ -2,6 +2,7 @@ package com.soma.coinviewer.feature.splash
 
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
+import com.soma.coinviewer.domain.repository.BinanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -10,11 +11,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel @Inject constructor() : BaseViewModel() {
+class SplashViewModel @Inject constructor(
+    private val binanceRepository: BinanceRepository
+) : BaseViewModel() {
     private val _eventFlow = MutableSharedFlow<SplashEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     init {
+        binanceRepository.connect()
+        binanceRepository.subscribeWebSocketData()
+
         viewModelScope.launch {
             delay(2000L)
             event(SplashEvent.TimerDone)

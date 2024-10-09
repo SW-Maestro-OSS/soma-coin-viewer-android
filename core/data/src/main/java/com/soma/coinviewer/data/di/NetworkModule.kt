@@ -14,16 +14,14 @@ import javax.inject.Singleton
 object NetworkModule {
 
     private const val BINANCE_API_BASE_URL = "wss://ws-api.binance.com:443/ws-api/v3"
-    private const val BINANCE_STREAM_BASE_URL = "wss://stream.binance.com:9443/ws/@trade"
+    private const val BINANCE_STREAM_BASE_URL = "wss://fstream.binance.com/ws/!ticker@arr"
 
-    // 로깅인터셉터 세팅
     @Provides
     @Singleton
     fun provideRequestHttpLoggingInterceptor() : HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
     }
 
-    // OKHttpClient에 로깅인터셉터 등록
     @Provides
     @Singleton
     fun provideOkHttpClient(

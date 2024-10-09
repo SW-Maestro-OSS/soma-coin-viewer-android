@@ -1,10 +1,15 @@
 package com.soma.coinviewer.feature.home
 
+import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
 import com.soma.coinviewer.domain.repository.BinanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,6 +18,14 @@ class HomeViewModel @Inject constructor(
 ) : BaseViewModel() {
     private val _listSortType = MutableStateFlow<ListSortType>(ListSortType.TOTAL_TRADE)
     val listSortType = _listSortType.asStateFlow()
+
+    val coinData = binanceRepository.binanceTickerData
+        .onEach { delay(200L) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList(),
+        )
 
     internal fun setListSortType(listSortType: ListSortType) {
         _listSortType.value = listSortType
