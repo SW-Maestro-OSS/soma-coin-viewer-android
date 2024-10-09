@@ -29,5 +29,8 @@ data class BinanceTickerResponse(
         totalTradedQuoteAssetVolume = lastPrice?.toBigDecimalOrNull() ?: BigDecimal(0.0),
         price = lastPrice?.toBigDecimalOrNull() ?: BigDecimal(0.0),
         priceChangePercent = priceChangePercent?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+        coinIconUrl = "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32/icon/${symbol?.removeSuffix(
+            "USDT"
+        )?.lowercase()}.png"
     )
 }

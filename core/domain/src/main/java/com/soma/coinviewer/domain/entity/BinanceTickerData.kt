@@ -7,8 +7,9 @@ data class BinanceTickerData(
     val totalTradedQuoteAssetVolume: BigDecimal,
     val price: BigDecimal,
     val priceChangePercent: BigDecimal,
-){
-    companion object{
+    val coinIconUrl: String,
+) {
+    companion object {
         const val BINANCE_TICKER_DATA_MAX_SIZE = 30
     }
 }

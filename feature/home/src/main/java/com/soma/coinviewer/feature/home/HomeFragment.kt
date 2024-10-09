@@ -1,5 +1,6 @@
 package com.soma.coinviewer.feature.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
@@ -200,14 +202,17 @@ private fun CoinItem(coinData: BinanceTickerData) {
             .height(30.dp),
     ) {
         AsyncImage(
-            model = "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32/icon/btc.png",
+            model = coinData.coinIconUrl,
             placeholder = painterResource(R.drawable.ic_updown),
+            error = painterResource(R.drawable.ic_updown),
+            onError = { Log.d("Img Error", coinData.coinIconUrl) },
             contentDescription = "",
+            modifier = Modifier.size(20.dp),
         )
 
         Text(
             text = coinData.symbol,
-            fontSize = 14.sp,
+            fontSize = 13.sp,
             textAlign = TextAlign.Start,
             modifier = Modifier.weight(1f),
         )
@@ -215,7 +220,7 @@ private fun CoinItem(coinData: BinanceTickerData) {
         Text(
             text = coinData.price.toPlainString(),
             fontSize = 14.sp,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.End,
             modifier = Modifier.weight(1f),
         )
 
@@ -228,7 +233,7 @@ private fun CoinItem(coinData: BinanceTickerData) {
         Text(
             text = coinData.priceChangePercent.toString(),
             fontSize = 14.sp,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.End,
             color = priceChangePercentColor,
             modifier = Modifier.weight(1f),
         )
