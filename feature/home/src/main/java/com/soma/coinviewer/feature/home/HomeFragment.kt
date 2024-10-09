@@ -196,10 +196,11 @@ private fun HomeScreen(
 @Composable
 private fun CoinItem(coinData: BinanceTickerData) {
     Row(
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .height(30.dp),
+            .height(40.dp),
     ) {
         AsyncImage(
             model = coinData.coinIconUrl,
@@ -224,14 +225,15 @@ private fun CoinItem(coinData: BinanceTickerData) {
             modifier = Modifier.weight(1f),
         )
 
-        val priceChangePercentColor = if (coinData.priceChangePercent >= BigDecimal(0.0)) {
-            Color.Green
-        } else {
-            Color.Red
-        }
+        val (priceChangePercentText, priceChangePercentColor) =
+            if (coinData.priceChangePercent >= BigDecimal(0.0)) {
+                "+" + coinData.priceChangePercent.toString() to Color.Green
+            } else {
+                coinData.priceChangePercent.toString() to Color.Red
+            }
 
         Text(
-            text = coinData.priceChangePercent.toString(),
+            text = priceChangePercentText,
             fontSize = 13.sp,
             textAlign = TextAlign.End,
             color = priceChangePercentColor,

@@ -1,6 +1,5 @@
 package com.soma.coinviewer.data.repository
 
-import android.util.Log
 import com.soma.coinviewer.data.datasource.BinanceDataSource
 import com.soma.coinviewer.domain.entity.BinanceTickerData
 import com.soma.coinviewer.domain.entity.BinanceTickerData.Companion.BINANCE_TICKER_DATA_MAX_SIZE
@@ -23,8 +22,8 @@ class BinanceRepositoryImpl @Inject constructor(
         _binanceTickerData.asStateFlow()
 
     private val binanceTickerDataMap = TreeMap<Pair<BigDecimal, String>, BinanceTickerData>(
-        compareBy<Pair<BigDecimal, String>> { it.first } // 먼저 first(Long)로 비교
-            .thenBy { it.second } // 그 다음 second(String)로 비교
+        compareBy<Pair<BigDecimal, String>> { it.first }
+            .thenBy { it.second }
     )
 
     private val isContainData = HashMap<String, BigDecimal>()
@@ -59,10 +58,3 @@ class BinanceRepositoryImpl @Inject constructor(
         }
     }
 }
-
-// TreeMap -> Key값을 기준으로 정렬
-// 30개를 자르는 기준은 Total traded Quote asset Volume임.
-// 즉, Total Traded Quote Asset Volume을 Key로 하고 30개를 자름.
-// 그럼 Symbol 기준으로 값을 업데이트 해야할 때는 어떡하지 ?
-// HashMap을 하나 더 둬서 이전 Total Traded Quote Asset Volume을 둬야하나 ..?
-// 근데 만약  Total Traded Quote Asset Volume이 같으면 ..?
