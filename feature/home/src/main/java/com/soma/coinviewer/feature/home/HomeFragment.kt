@@ -203,8 +203,8 @@ private fun CoinItem(coinData: BinanceTickerData) {
     ) {
         AsyncImage(
             model = coinData.coinIconUrl,
-            placeholder = painterResource(R.drawable.ic_updown),
-            error = painterResource(R.drawable.ic_updown),
+            placeholder = painterResource(com.soma.coinviewer.common_ui.R.drawable.ic_coin_placeholder),
+            error = painterResource(com.soma.coinviewer.common_ui.R.drawable.ic_coin_placeholder),
             onError = { Log.d("Img Error", coinData.coinIconUrl) },
             contentDescription = "",
             modifier = Modifier.size(20.dp),
@@ -219,7 +219,7 @@ private fun CoinItem(coinData: BinanceTickerData) {
 
         Text(
             text = coinData.price.toPlainString(),
-            fontSize = 14.sp,
+            fontSize = 13.sp,
             textAlign = TextAlign.End,
             modifier = Modifier.weight(1f),
         )
@@ -232,7 +232,7 @@ private fun CoinItem(coinData: BinanceTickerData) {
 
         Text(
             text = coinData.priceChangePercent.toString(),
-            fontSize = 14.sp,
+            fontSize = 13.sp,
             textAlign = TextAlign.End,
             color = priceChangePercentColor,
             modifier = Modifier.weight(1f),
