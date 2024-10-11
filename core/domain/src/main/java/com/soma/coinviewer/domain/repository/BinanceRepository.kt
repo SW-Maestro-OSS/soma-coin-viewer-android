@@ -1,11 +1,12 @@
 package com.soma.coinviewer.domain.repository
 
-import com.soma.coinviewer.domain.entity.BinanceMessage
+import com.soma.coinviewer.domain.entity.BinanceTickerData
 import kotlinx.coroutines.flow.StateFlow
 
 interface BinanceRepository {
+    val binanceTickerData: StateFlow<List<BinanceTickerData>>
+
     fun connect()
     fun disconnect()
-    fun sendMessage(message: BinanceMessage): Boolean
-    fun subscribeWebSocketData(): StateFlow<String?>
+    fun subscribeWebSocketData()
 }

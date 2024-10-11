@@ -2,42 +2,48 @@ package com.soma.coinviewer.feature.home
 
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
-import com.soma.coinviewer.domain.entity.BinanceMessage
 import com.soma.coinviewer.domain.repository.BinanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val binanceRepository: BinanceRepository
 ) : BaseViewModel() {
-    private val _homeUiState = MutableStateFlow<String?>("")
-    val homeUiState = _homeUiState.asStateFlow()
+    private val _listSortType = MutableStateFlow<ListSortType>(ListSortType.TOTAL_TRADE)
+    val listSortType = _listSortType.asStateFlow()
 
-
-    fun testBinance() {
-        binanceRepository.connect()
-
-        val messageSample = BinanceMessage(
-            id = 734,
-            method = "SUBSCRIBE",
-            params = listOf("btcusdt@depth")
+    val coinData = binanceRepository.binanceTickerData
+        .onEach { delay(200L) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList(),
         )
 
-        viewModelScope.launch(exceptionHandler) {
-            binanceRepository.sendMessage(messageSample)
+    internal fun updateSortType(asc: ListSortType, desc: ListSortType) {
+        val currentSortType = _listSortType.value
 
-            binanceRepository.subscribeWebSocketData().collect {
-                _homeUiState.value = it
-            }
+        _listSortType.value = when (currentSortType) {
+            asc -> desc
+            desc -> ListSortType.TOTAL_TRADE
+            else -> asc
         }
     }
+}
 
-    fun testDisconnectBinance() {
-        binanceRepository.disconnect()
-    }
+enum class ListSortType {
+    TOTAL_TRADE,
+    SYMBOL_ASC,
+    SYMBOL_DESC,
+    PRICE_ASC,
+    PRICE_DESC,
+    ONE_DAY_CHANGE_ASC,
+    ONE_DAY_CHANGE_DESC;
 }

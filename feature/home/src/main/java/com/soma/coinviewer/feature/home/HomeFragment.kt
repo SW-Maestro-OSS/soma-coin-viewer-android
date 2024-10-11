@@ -1,20 +1,39 @@
 package com.soma.coinviewer.feature.home
 
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.soma.coinviewer.common_ui.base.BaseComposeFragment
+import com.soma.coinviewer.domain.entity.BinanceTickerData
 import dagger.hilt.android.AndroidEntryPoint
+import java.math.BigDecimal
 
 @AndroidEntryPoint
 class HomeFragment : BaseComposeFragment() {
@@ -23,61 +42,186 @@ class HomeFragment : BaseComposeFragment() {
     @Composable
     override fun ComposeLayout() {
         fragmentViewModel.apply {
-            val uiState by homeUiState.collectAsStateWithLifecycle()
+            val listSortType by listSortType.collectAsStateWithLifecycle()
+            val coinData by coinData.collectAsStateWithLifecycle()
 
-            fragmentViewModel.apply {
-                HomeScreen(
-                    uiState = uiState ?: "",
-                    test = ::testBinance,
-                    testDisconnect = ::testDisconnectBinance,
-                )
+            HomeScreen(
+                listSortType = listSortType,
+                coinData = coinData,
+                updateSortType = ::updateSortType,
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeScreen(
+    listSortType: ListSortType,
+    coinData: List<BinanceTickerData>,
+    updateSortType: (ListSortType, ListSortType) -> Unit,
+) {
+    Scaffold(containerColor = Color.White) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .background(Color.LightGray),
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            updateSortType(ListSortType.SYMBOL_ASC, ListSortType.SYMBOL_DESC)
+                        },
+                ) {
+                    val sortImage = when (listSortType) {
+                        ListSortType.SYMBOL_ASC -> R.drawable.ic_up
+                        ListSortType.SYMBOL_DESC -> R.drawable.ic_down
+                        else -> R.drawable.ic_updown
+                    }
+
+                    Image(
+                        painter = painterResource(sortImage),
+                        contentDescription = "",
+                    )
+
+                    Text(
+                        text = stringResource(R.string.symbol),
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Start,
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            updateSortType(ListSortType.PRICE_ASC, ListSortType.PRICE_DESC)
+                        },
+                ) {
+                    val sortImage = when (listSortType) {
+                        ListSortType.PRICE_ASC -> R.drawable.ic_up
+                        ListSortType.PRICE_DESC -> R.drawable.ic_down
+                        else -> R.drawable.ic_updown
+                    }
+
+                    Image(
+                        painter = painterResource(sortImage),
+                        contentDescription = "",
+                    )
+
+                    Text(
+                        text = stringResource(R.string.price),
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            updateSortType(
+                                ListSortType.ONE_DAY_CHANGE_ASC,
+                                ListSortType.ONE_DAY_CHANGE_DESC
+                            )
+                        },
+                ) {
+                    val sortImage = when (listSortType) {
+                        ListSortType.ONE_DAY_CHANGE_ASC -> R.drawable.ic_up
+                        ListSortType.ONE_DAY_CHANGE_DESC -> R.drawable.ic_down
+                        else -> R.drawable.ic_updown
+                    }
+
+                    Image(
+                        painter = painterResource(sortImage),
+                        contentDescription = "",
+                    )
+
+                    Text(
+                        text = stringResource(R.string.change_24h),
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+            }
+
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                itemsIndexed(
+                    items = coinData,
+                    key = { _, data -> data.symbol },
+                ) { idx, data ->
+                    CoinItem(data)
+
+                    if (idx != 29) {
+                        HorizontalDivider(color = Color.DarkGray)
+                    }
+                }
             }
         }
     }
 }
 
-
 @Composable
-private fun HomeScreen(
-    uiState: String,
-    test: () -> Unit,
-    testDisconnect: () -> Unit,
-) {
-    Column(
+private fun CoinItem(coinData: BinanceTickerData) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .height(40.dp),
     ) {
-        Text(text = "Hello CoinViewer")
-        Text(text = "Binance Order book Test Response입니다!!")
-
-        Spacer(
-            modifier = Modifier
-                .height(10.dp)
+        AsyncImage(
+            model = coinData.coinIconUrl,
+            placeholder = painterResource(com.soma.coinviewer.common_ui.R.drawable.ic_coin_placeholder),
+            error = painterResource(com.soma.coinviewer.common_ui.R.drawable.ic_coin_placeholder),
+            onError = { Log.w("Img Error", coinData.coinIconUrl) },
+            contentDescription = "",
+            modifier = Modifier.size(20.dp),
         )
 
-        Text(text = uiState)
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Button(
-            onClick = test,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(text = "Binance Connect")
-        }
-
-        Spacer(
-            modifier = Modifier
-                .height(5.dp)
+        Text(
+            text = coinData.symbol,
+            fontSize = 13.sp,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.weight(1f),
         )
 
-        Button(
-            onClick = testDisconnect,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(text = "Binance Disconnect")
-        }
+        Text(
+            text = coinData.price.toPlainString(),
+            fontSize = 13.sp,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(1f),
+        )
+
+        val (priceChangePercentText, priceChangePercentColor) =
+            if (coinData.priceChangePercent >= BigDecimal(0.0)) {
+                "+" + coinData.priceChangePercent.toString() to Color.Green
+            } else {
+                coinData.priceChangePercent.toString() to Color.Red
+            }
+
+        Text(
+            text = priceChangePercentText,
+            fontSize = 13.sp,
+            textAlign = TextAlign.End,
+            color = priceChangePercentColor,
+            modifier = Modifier.weight(1f),
+        )
     }
 }

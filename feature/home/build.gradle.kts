@@ -45,10 +45,6 @@ dependencies {
     implementation(project(":core:common-ui"))
     implementation(project(":core:domain"))
 
-    // Test
-    testImplementation(libs.junit4)
-    androidTestImplementation(libs.androidx.junit)
-
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
@@ -67,4 +63,11 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.andriodx.compose.compiler)
+
+    implementation(libs.coil.compose)
+
+    // Test
+    testImplementation(libs.junit4)
+    androidTestImplementation(libs.androidx.junit)
+
 }
