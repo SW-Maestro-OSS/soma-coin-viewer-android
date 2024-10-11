@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -94,7 +95,7 @@ private fun HomeScreen(
                     )
 
                     Text(
-                        text = "Symbol",
+                        text = stringResource(R.string.symbol),
                         fontSize = 14.sp,
                         textAlign = TextAlign.Start,
                     )
@@ -121,7 +122,7 @@ private fun HomeScreen(
                     )
 
                     Text(
-                        text = "Price (\$)",
+                        text = stringResource(R.string.price),
                         fontSize = 14.sp,
                         textAlign = TextAlign.Start,
                         modifier = Modifier.weight(1f),
@@ -152,7 +153,7 @@ private fun HomeScreen(
                     )
 
                     Text(
-                        text = "24h Change %",
+                        text = stringResource(R.string.change_24h),
                         fontSize = 14.sp,
                         textAlign = TextAlign.Start,
                         modifier = Modifier.weight(1f),
@@ -189,7 +190,7 @@ private fun CoinItem(coinData: BinanceTickerData) {
             model = coinData.coinIconUrl,
             placeholder = painterResource(com.soma.coinviewer.common_ui.R.drawable.ic_coin_placeholder),
             error = painterResource(com.soma.coinviewer.common_ui.R.drawable.ic_coin_placeholder),
-            onError = { Log.d("Img Error", coinData.coinIconUrl) },
+            onError = { Log.w("Img Error", coinData.coinIconUrl) },
             contentDescription = "",
             modifier = Modifier.size(20.dp),
         )
