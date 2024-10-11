@@ -27,8 +27,14 @@ class HomeViewModel @Inject constructor(
             initialValue = emptyList(),
         )
 
-    internal fun setListSortType(listSortType: ListSortType) {
-        _listSortType.value = listSortType
+    internal fun updateSortType(asc: ListSortType, desc: ListSortType) {
+        val currentSortType = _listSortType.value
+
+        _listSortType.value = when (currentSortType) {
+            asc -> desc
+            desc -> ListSortType.TOTAL_TRADE
+            else -> asc
+        }
     }
 }
 

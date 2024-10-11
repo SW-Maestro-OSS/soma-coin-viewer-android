@@ -44,13 +44,11 @@ class HomeFragment : BaseComposeFragment() {
             val listSortType by listSortType.collectAsStateWithLifecycle()
             val coinData by coinData.collectAsStateWithLifecycle()
 
-            fragmentViewModel.apply {
-                HomeScreen(
-                    listSortType = listSortType,
-                    coinData = coinData,
-                    setListSortType = ::setListSortType,
-                )
-            }
+            HomeScreen(
+                listSortType = listSortType,
+                coinData = coinData,
+                updateSortType = ::updateSortType,
+            )
         }
     }
 }
@@ -59,7 +57,7 @@ class HomeFragment : BaseComposeFragment() {
 private fun HomeScreen(
     listSortType: ListSortType,
     coinData: List<BinanceTickerData>,
-    setListSortType: (ListSortType) -> Unit,
+    updateSortType: (ListSortType, ListSortType) -> Unit,
 ) {
     Scaffold(containerColor = Color.White) { paddingValues ->
         Column(
@@ -81,13 +79,7 @@ private fun HomeScreen(
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            val newListSortType = when (listSortType) {
-                                ListSortType.SYMBOL_ASC -> ListSortType.SYMBOL_DESC
-                                ListSortType.SYMBOL_DESC -> ListSortType.TOTAL_TRADE
-                                else -> ListSortType.SYMBOL_ASC
-                            }
-
-                            setListSortType(newListSortType)
+                            updateSortType(ListSortType.SYMBOL_ASC, ListSortType.SYMBOL_DESC)
                         },
                 ) {
                     val sortImage = when (listSortType) {
@@ -114,13 +106,7 @@ private fun HomeScreen(
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            val newListSortType = when (listSortType) {
-                                ListSortType.PRICE_ASC -> ListSortType.PRICE_DESC
-                                ListSortType.PRICE_DESC -> ListSortType.TOTAL_TRADE
-                                else -> ListSortType.PRICE_ASC
-                            }
-
-                            setListSortType(newListSortType)
+                            updateSortType(ListSortType.PRICE_ASC, ListSortType.PRICE_DESC)
                         },
                 ) {
                     val sortImage = when (listSortType) {
@@ -148,13 +134,10 @@ private fun HomeScreen(
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            val newListSortType = when (listSortType) {
-                                ListSortType.ONE_DAY_CHANGE_ASC -> ListSortType.ONE_DAY_CHANGE_DESC
-                                ListSortType.ONE_DAY_CHANGE_DESC -> ListSortType.TOTAL_TRADE
-                                else -> ListSortType.ONE_DAY_CHANGE_ASC
-                            }
-
-                            setListSortType(newListSortType)
+                            updateSortType(
+                                ListSortType.ONE_DAY_CHANGE_ASC,
+                                ListSortType.ONE_DAY_CHANGE_DESC
+                            )
                         },
                 ) {
                     val sortImage = when (listSortType) {
@@ -180,7 +163,7 @@ private fun HomeScreen(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 itemsIndexed(
                     items = coinData,
-                    key = { idx, data -> data.symbol },
+                    key = { _, data -> data.symbol },
                 ) { idx, data ->
                     CoinItem(data)
 
