@@ -15,14 +15,13 @@ class BinanceDataSource @Inject constructor(
 ) {
     private var webSocket: WebSocket? = null
 
-    fun connect() {
+    fun connect(): Flow<Array<BinanceTickerResponse>> {
         webSocket = okHttpClient.newWebSocket(request, binanceListener)
+        return binanceListener.responseMessage
     }
 
     fun disconnect() {
         webSocket?.close(1000, "Close Binance")
         webSocket = null
     }
-
-    fun subscribeWebSocket(): Flow<Array<BinanceTickerResponse>> = binanceListener.responseMessage
 }

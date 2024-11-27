@@ -6,19 +6,23 @@ plugins {
 }
 
 android {
-    namespace = "com.soma.coinviewer.data"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    namespace = "com.soma.coinviewer.navigation"
+    compileSdk = 34
 
     defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
+        minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -30,25 +34,12 @@ android {
     kotlinOptions {
         jvmTarget = libs.versions.jvmTarget.get()
     }
-
-    buildFeatures {
-        buildConfig = true
-    }
 }
 
 dependencies {
-    implementation(project(":core:domain"))
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.navigation.fragment)
 
-    // Test
-    testImplementation(libs.junit4)
-    androidTestImplementation(libs.androidx.junit)
-
-    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
-    // Network
-    implementation(libs.okhttp.core)
-    implementation(libs.okhttp.logging)
-    implementation(libs.gson)
 }
