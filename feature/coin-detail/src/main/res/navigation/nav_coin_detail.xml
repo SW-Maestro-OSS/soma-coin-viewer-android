@@ -11,7 +11,6 @@
         <deepLink app:uri="@string/deeplink_coinDetail" />
         <argument
             android:name="coinId"
-            android:defaultValue="UNKNOWN"
-            app:argType="String" />
+            app:argType="string" />
     </fragment>
 </navigation>

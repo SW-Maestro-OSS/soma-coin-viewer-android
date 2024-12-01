@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,20 +23,24 @@ class CoinDetailFragment : BaseComposeFragment() {
         val coinId = args.coinId
 
         fragmentViewModel.apply {
-            CoinDetailScreen()
+            CoinDetailScreen(
+                coinId = coinId,
+            )
         }
     }
 }
 
 @Composable
-private fun CoinDetailScreen() {
+private fun CoinDetailScreen(coinId: String) {
     Scaffold(containerColor = Color.White) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-
+            Text(
+                text = coinId,
+            )
         }
     }
 }

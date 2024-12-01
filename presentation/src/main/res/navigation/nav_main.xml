@@ -7,4 +7,5 @@
     <include app:graph="@navigation/nav_home" />
     <include app:graph="@navigation/nav_setting" />
     <include app:graph="@navigation/nav_splash" />
+    <include app:graph="@navigation/nav_coin_detail" />
 </navigation>

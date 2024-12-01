@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:setting"))
     implementation(project(":feature:splash"))
+    implementation(project(":feature:coin-detail"))
 
     // Hilt
     implementation(libs.hilt.android)
