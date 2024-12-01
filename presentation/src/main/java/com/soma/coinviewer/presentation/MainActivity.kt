@@ -1,5 +1,6 @@
 package com.soma.coinviewer.presentation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
