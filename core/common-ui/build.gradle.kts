@@ -56,4 +56,9 @@ dependencies {
     implementation(libs.andriodx.compose.compiler)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.lifecycle.runtimeCompose)
+
+    testImplementation(libs.testng)
+    androidTestImplementation(libs.junit)
+    implementation(libs.androidx.monitor)
+    implementation(libs.androidx.test.ext)
 }
