@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
-            name="viewModel"
-            type="com.soma.coinviewer.feature.setting.SettingViewModel" />
+
     </data>
 
     <LinearLayout
