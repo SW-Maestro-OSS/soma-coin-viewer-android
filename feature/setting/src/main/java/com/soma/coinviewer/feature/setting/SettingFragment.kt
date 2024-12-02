@@ -49,7 +49,7 @@ class SettingFragment :
 
         binding.switchShowSymbolGrid.setOnCheckedChangeListener { _, isChecked ->
             val selectHowToShowSymbols = if (isChecked) {
-                HowToShowSymbols.Grid2x2
+                HowToShowSymbols.GRID2X2
             } else {
                 HowToShowSymbols.DEFAULT
             }

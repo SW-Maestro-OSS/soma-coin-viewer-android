@@ -1,7 +1,5 @@
 package com.soma.coinviewer.domain.datastore
 
-import com.soma.coinviewer.domain.datastore.PriceCurrencyUnit.DOLLAR
-
 enum class PriceCurrencyUnit(val value: String) {
     DOLLAR("dollar"),
     WON("won"),
@@ -30,7 +28,7 @@ enum class Language(val value: String) {
 
 enum class HowToShowSymbols(val value: String) {
     LINEAR("linear"),
-    Grid2x2("2x2_grid"),
+    GRID2X2("2x2_grid"),
     DEFAULT(LINEAR.value);
 
     companion object {
