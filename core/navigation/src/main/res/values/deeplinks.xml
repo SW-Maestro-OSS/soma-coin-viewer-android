@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="deeplink_home">soma://home</string>
+    <string name="deeplink_coinDetail">soma://coin-detail/{coinId}</string>
     <string name="deeplink_setting">soma://setting</string>
     <string name="deeplink_splash">soma://splash</string>
 </resources>
