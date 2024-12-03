@@ -48,6 +48,8 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     // Network
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.gson.converter)
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
     implementation(libs.gson)
