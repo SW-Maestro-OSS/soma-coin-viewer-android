@@ -1,8 +1,8 @@
 package com.soma.coinviewer.data.repository
 
-import com.soma.coinviewer.data.datasource.BinanceDataSource
-import com.soma.coinviewer.domain.entity.BinanceTickerData
-import com.soma.coinviewer.domain.entity.BinanceTickerData.Companion.BINANCE_TICKER_DATA_MAX_SIZE
+import com.soma.coinviewer.data.network.datasource.BinanceDataSource
+import com.soma.coinviewer.domain.model.BinanceTickerData
+import com.soma.coinviewer.domain.model.BinanceTickerData.Companion.BINANCE_TICKER_DATA_MAX_SIZE
 import com.soma.coinviewer.domain.repository.BinanceRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

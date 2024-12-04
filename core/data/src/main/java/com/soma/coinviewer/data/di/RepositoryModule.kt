@@ -16,13 +16,13 @@ interface RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindsWebSocketRepository(
+    fun bindsWebSocketRepository(
         webSocketRepositoryImpl: BinanceRepositoryImpl
     ): BinanceRepository
 
     @Binds
     @Singleton
-    abstract fun bindsExchangeRateRepository(
+    fun bindsExchangeRateRepository(
         exchangeRateRepositoryImpl: ExchangeRateRepositoryImpl
     ): ExchangeRateRepository
 }

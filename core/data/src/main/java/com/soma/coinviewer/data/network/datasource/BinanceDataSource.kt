@@ -1,7 +1,7 @@
-package com.soma.coinviewer.data.datasource
+package com.soma.coinviewer.data.network.datasource
 
-import com.soma.coinviewer.data.listener.BinanceListener
-import com.soma.coinviewer.data.model.BinanceTickerResponse
+import com.soma.coinviewer.data.network.listener.BinanceListener
+import com.soma.coinviewer.data.network.model.BinanceTickerResponse
 import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
 import okhttp3.Request

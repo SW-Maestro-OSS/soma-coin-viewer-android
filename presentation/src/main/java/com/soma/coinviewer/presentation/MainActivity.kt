@@ -2,6 +2,7 @@ package com.soma.coinviewer.presentation
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -64,6 +65,9 @@ class MainActivity : AppCompatActivity() {
         repeatOnStarted {
             navigationFlow.collect { handleNavigationEvent(it) }
         }
+        repeatOnStarted {
+            errorFlow.collect { handleError(it) }
+        }
     }
 
     private fun handleNavigationEvent(navigationTarget: NavigationTarget) {
@@ -72,5 +76,10 @@ class MainActivity : AppCompatActivity() {
             deepLinkRoute = navigationTarget.destination,
             popUpTo = navigationTarget.popUpTo
         )
+    }
+
+    private fun handleError(throwable: Throwable) {
+        Toast.makeText(this@MainActivity, throwable.message, Toast.LENGTH_SHORT)
+            .show()
     }
 }

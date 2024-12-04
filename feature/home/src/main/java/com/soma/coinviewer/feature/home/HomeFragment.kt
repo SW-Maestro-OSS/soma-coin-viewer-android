@@ -31,7 +31,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.soma.coinviewer.common_ui.base.BaseComposeFragment
-import com.soma.coinviewer.domain.entity.BinanceTickerData
+import com.soma.coinviewer.domain.model.BinanceTickerData
 import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 

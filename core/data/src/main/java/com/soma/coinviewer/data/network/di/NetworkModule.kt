@@ -1,13 +1,11 @@
-package com.soma.coinviewer.data.di
+package com.soma.coinviewer.data.network.di
 
-import com.google.gson.Gson
 import com.soma.coinviewer.data.BuildConfig
-import com.soma.coinviewer.data.api.OpenApi
+import com.soma.coinviewer.data.network.api.OpenApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor

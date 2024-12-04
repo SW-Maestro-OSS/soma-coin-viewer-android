@@ -1,7 +1,7 @@
-package com.soma.coinviewer.data.api
+package com.soma.coinviewer.data.network.api
 
 import com.soma.coinviewer.data.BuildConfig
-import com.soma.coinviewer.data.model.ExchangeRateResponse
+import com.soma.coinviewer.data.network.model.ExchangeRateResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

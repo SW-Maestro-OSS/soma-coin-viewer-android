@@ -1,6 +1,6 @@
 package com.soma.coinviewer.domain.repository
 
-import com.soma.coinviewer.domain.entity.BinanceTickerData
+import com.soma.coinviewer.domain.model.BinanceTickerData
 import kotlinx.coroutines.flow.StateFlow
 
 interface BinanceRepository {

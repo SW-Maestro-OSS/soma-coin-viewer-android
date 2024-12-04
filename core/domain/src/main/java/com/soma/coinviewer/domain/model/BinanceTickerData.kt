@@ -1,4 +1,4 @@
-package com.soma.coinviewer.domain.entity
+package com.soma.coinviewer.domain.model
 
 import java.math.BigDecimal
 

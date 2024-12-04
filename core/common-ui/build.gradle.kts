@@ -56,4 +56,7 @@ dependencies {
     implementation(libs.andriodx.compose.compiler)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.lifecycle.runtimeCompose)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 }

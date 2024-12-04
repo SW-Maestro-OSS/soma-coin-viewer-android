@@ -1,7 +1,7 @@
-package com.soma.coinviewer.data.listener
+package com.soma.coinviewer.data.network.listener
 
 import com.google.gson.Gson
-import com.soma.coinviewer.data.model.BinanceTickerResponse
+import com.soma.coinviewer.data.network.model.BinanceTickerResponse
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow

@@ -2,6 +2,7 @@ package com.soma.coinviewer.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
+import com.soma.coinviewer.domain.model.exception.ErrorHelper
 import com.soma.coinviewer.domain.repository.BinanceRepository
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
 import com.soma.coinviewer.feature.splash.R
@@ -9,6 +10,7 @@ import com.soma.coinviewer.navigation.DeepLinkRoute
 import com.soma.coinviewer.navigation.NavigationHelper
 import com.soma.coinviewer.navigation.NavigationTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,11 +21,14 @@ class MainViewModel @Inject constructor(
     private val exchangeRateRepository: ExchangeRateRepository,
     private val binanceRepository: BinanceRepository,
     private val navigationHelper: NavigationHelper,
+    private val exceptionHandler: CoroutineExceptionHandler,
+    private val errorHelper: ErrorHelper,
 ) : BaseViewModel() {
-    val navigationFlow = navigationHelper.navigationFlow
+    internal val navigationFlow = navigationHelper.navigationFlow
+    internal val errorFlow = errorHelper.errorEvent
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             val subscribeJob = connectWebSocket()
             getExchangeRate()
             delay(2000L) // 최소 2초는 기다립니다.
@@ -39,8 +44,6 @@ class MainViewModel @Inject constructor(
 
     internal fun connectWebSocket() = viewModelScope.launch {
         binanceRepository.connect()
-        val subscribeJob = launch { binanceRepository.connect() }
-        subscribeJob.cancelAndJoin()
     }
 
     internal fun disconnectWebsocket() = viewModelScope.launch {
@@ -48,6 +51,6 @@ class MainViewModel @Inject constructor(
     }
 
     private fun getExchangeRate() = viewModelScope.launch {
-        exchangeRateRepository.getExchangeRate()
+        val result = exchangeRateRepository.getExchangeRate()
     }
 }

@@ -1,5 +1,6 @@
 package com.soma.coinviewer.feature.home
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
 import com.soma.coinviewer.domain.repository.BinanceRepository
@@ -20,7 +21,10 @@ class HomeViewModel @Inject constructor(
     val listSortType = _listSortType.asStateFlow()
 
     val coinData = binanceRepository.binanceTickerData
-        .onEach { delay(200L) }
+        .onEach {
+            Log.d("test", it.toString())
+            delay(200L)
+         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
