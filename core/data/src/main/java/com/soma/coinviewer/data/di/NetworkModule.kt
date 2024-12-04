@@ -19,6 +19,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     private const val BINANCE_STREAM_BASE_URL = "wss://fstream.binance.com/ws/!ticker@arr"
+    private const val OPEN_API_BASE_URL = "https://www.koreaexim.go.kr/"
 
     @Provides
     @Singleton
@@ -47,8 +48,7 @@ object NetworkModule {
     fun provideOpenApi(okHttpClient: OkHttpClient): OpenApi = Retrofit.Builder()
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
-        .baseUrl()
+        .baseUrl(OPEN_API_BASE_URL)
         .build()
         .create(OpenApi::class.java)
-
 }
