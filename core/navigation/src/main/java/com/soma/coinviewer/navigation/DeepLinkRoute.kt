@@ -15,6 +15,11 @@ sealed class DeepLinkRoute(
         addressRes = R.string.deeplink_home,
     )
 
+    data class CoinDetail(val coinId: String) : DeepLinkRoute(
+        addressRes = R.string.deeplink_coinDetail,
+        params = mapOf("coinId" to coinId),
+    )
+
     data object Setting : DeepLinkRoute(
         addressRes = R.string.deeplink_setting,
     )

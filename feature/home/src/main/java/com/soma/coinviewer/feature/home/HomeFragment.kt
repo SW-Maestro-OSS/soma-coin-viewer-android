@@ -32,6 +32,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.soma.coinviewer.common_ui.base.BaseComposeFragment
 import com.soma.coinviewer.domain.model.BinanceTickerData
+import com.soma.coinviewer.navigation.DeepLinkRoute
+import com.soma.coinviewer.navigation.NavigationTarget
 import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 
@@ -49,6 +51,9 @@ class HomeFragment : BaseComposeFragment() {
                 listSortType = listSortType,
                 coinData = coinData,
                 updateSortType = ::updateSortType,
+                navigateToCoinDetail = { coinId ->
+                    navigationHelper.navigateTo(NavigationTarget(DeepLinkRoute.CoinDetail(coinId)))
+                },
             )
         }
     }
@@ -59,6 +64,7 @@ private fun HomeScreen(
     listSortType: ListSortType,
     coinData: List<BinanceTickerData>,
     updateSortType: (ListSortType, ListSortType) -> Unit,
+    navigateToCoinDetail: (String) -> Unit,
 ) {
     Scaffold(containerColor = Color.White) { paddingValues ->
         Column(
@@ -166,25 +172,34 @@ private fun HomeScreen(
                     items = coinData,
                     key = { _, data -> data.symbol },
                 ) { idx, data ->
-                    CoinItem(data)
+                    CoinItem(
+                        coinData = data,
+                        navigateToCoinDetail = navigateToCoinDetail,
+                    )
 
                     if (idx != 29) {
                         HorizontalDivider(color = Color.DarkGray)
                     }
                 }
             }
+
+
         }
     }
 }
 
 @Composable
-private fun CoinItem(coinData: BinanceTickerData) {
+private fun CoinItem(
+    coinData: BinanceTickerData,
+    navigateToCoinDetail: (String) -> Unit,
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(2.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp),
+            .height(40.dp)
+            .clickable { navigateToCoinDetail(coinData.symbol) },
     ) {
         AsyncImage(
             model = coinData.coinIconUrl,
