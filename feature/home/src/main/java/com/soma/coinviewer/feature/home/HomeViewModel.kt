@@ -1,6 +1,5 @@
 package com.soma.coinviewer.feature.home
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
 import com.soma.coinviewer.domain.repository.BinanceRepository
@@ -15,16 +14,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val binanceRepository: BinanceRepository
+    private val binanceRepository: BinanceRepository,
 ) : BaseViewModel() {
     private val _listSortType = MutableStateFlow<ListSortType>(ListSortType.TOTAL_TRADE)
     val listSortType = _listSortType.asStateFlow()
 
     val coinData = binanceRepository.binanceTickerData
-        .onEach {
-            Log.d("test", it.toString())
-            delay(200L)
-         }
+        .onEach { delay(200L) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,

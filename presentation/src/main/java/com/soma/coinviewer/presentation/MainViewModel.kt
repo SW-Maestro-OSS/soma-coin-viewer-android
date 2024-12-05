@@ -28,11 +28,14 @@ class MainViewModel @Inject constructor(
     internal val errorFlow = errorHelper.errorEvent
 
     init {
-        viewModelScope.launch(exceptionHandler) {
+        viewModelScope.launch {
             val subscribeJob = connectWebSocket()
-            getExchangeRate()
+            val exchangeRateJob = getExchangeRate()
+
             delay(2000L) // 최소 2초는 기다립니다.
             subscribeJob.cancelAndJoin() // 2초가 되어도 연결이 안됐을경우 이를 기다립니다.
+            exchangeRateJob.cancelAndJoin()
+
             navigationHelper.navigateTo(
                 NavigationTarget(
                     destination = DeepLinkRoute.Home,
@@ -44,13 +47,14 @@ class MainViewModel @Inject constructor(
 
     internal fun connectWebSocket() = viewModelScope.launch {
         binanceRepository.connect()
+        binanceRepository.subscribeWebSocketData()
     }
 
     internal fun disconnectWebsocket() = viewModelScope.launch {
         binanceRepository.disconnect()
     }
 
-    private fun getExchangeRate() = viewModelScope.launch {
-        val result = exchangeRateRepository.getExchangeRate()
+    private fun getExchangeRate() = viewModelScope.launch(exceptionHandler) {
+        exchangeRateRepository.getExchangeRate()
     }
 }

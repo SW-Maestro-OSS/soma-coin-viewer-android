@@ -23,14 +23,12 @@ class ExchangeRateRepositoryImpl @Inject constructor(
     override suspend fun getExchangeRate(): List<ExchangeRate> {
         val today = LocalDate.now(ZoneId.of("Asia/Seoul"))
         val result = exchangeRateDataSource.getExchangeRate(today)
-            .onResponse()
 
         if (result.isNotEmpty()) {
             return result.map { it.toVO() }
         }
 
         return exchangeRateDataSource.getExchangeRate(today.minusDays(1))
-            .onResponse()
             .map { it.toVO() }
     }
 }
