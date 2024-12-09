@@ -2,7 +2,7 @@ package com.soma.coinviewer.domain.datastore
 
 import kotlinx.coroutines.flow.Flow
 
-interface SettingDataStore {
+interface SettingDataSource {
     suspend fun savePriceCurrencyUnit(priceCurrencyUnit: PriceCurrencyUnit)
     suspend fun saveLanguage(language: Language)
     suspend fun saveHowToShowSymbols(howToShowSymbols: HowToShowSymbols)

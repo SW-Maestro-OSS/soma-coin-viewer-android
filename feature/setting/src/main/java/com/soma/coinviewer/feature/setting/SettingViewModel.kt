@@ -7,14 +7,14 @@ import com.soma.coinviewer.common_ui.base.BaseViewModel
 import com.soma.coinviewer.domain.datastore.PriceCurrencyUnit
 import com.soma.coinviewer.domain.datastore.Language
 import com.soma.coinviewer.domain.datastore.HowToShowSymbols
-import com.soma.coinviewer.domain.datastore.SettingDataStore
+import com.soma.coinviewer.domain.datastore.SettingDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    private val settingDataStore: SettingDataStore,
+    private val settingDataStore: SettingDataSource,
 ) : BaseViewModel() {
 
     private val _priceCurrencyUnit = MutableLiveData<PriceCurrencyUnit>()
