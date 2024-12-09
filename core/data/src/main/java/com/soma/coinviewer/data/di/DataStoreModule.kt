@@ -4,8 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.soma.coinviewer.data.datastore.SettingDataSourceImpl
-import com.soma.coinviewer.domain.datastore.SettingDataSource
+import com.soma.coinviewer.data.datastore.LocalSettingDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +26,7 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideSettingDataStore(dataStore: DataStore<Preferences>): SettingDataSource {
-        return SettingDataSourceImpl(dataStore)
+    fun provideLocalSettingDataSource(dataStore: DataStore<Preferences>): LocalSettingDataSource {
+        return LocalSettingDataSource(dataStore)
     }
 }
