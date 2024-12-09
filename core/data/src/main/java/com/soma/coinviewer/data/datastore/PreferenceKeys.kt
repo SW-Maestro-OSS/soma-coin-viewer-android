@@ -2,8 +2,9 @@ package com.soma.coinviewer.data.datastore
 
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.soma.coinviewer.domain.datastore.PreferenceKeys
 
-fun PreferenceKeys.toPreferencesKey(): Preferences.Key<String> {
-    return stringPreferencesKey(this.key)
+enum class PreferenceKeys(val key: Preferences.Key<String>) {
+    PRICE_CURRENCY_UNIT(stringPreferencesKey("price_currency_unit")),
+    LANGUAGE(stringPreferencesKey("language")),
+    HOW_TO_SHOW_SYMBOLS(stringPreferencesKey("how_to_show_symbols")),
 }
