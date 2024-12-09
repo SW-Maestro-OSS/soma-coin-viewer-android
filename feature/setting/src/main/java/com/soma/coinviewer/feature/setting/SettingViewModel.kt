@@ -7,14 +7,14 @@ import com.soma.coinviewer.common_ui.base.BaseViewModel
 import com.soma.coinviewer.domain.datastore.PriceCurrencyUnit
 import com.soma.coinviewer.domain.datastore.Language
 import com.soma.coinviewer.domain.datastore.HowToShowSymbols
-import com.soma.coinviewer.domain.datastore.SettingDataSource
+import com.soma.coinviewer.domain.repository.SettingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    private val settingDataStore: SettingDataSource,
+    private val settingRepository: SettingRepository,
 ) : BaseViewModel() {
 
     private val _priceCurrencyUnit = MutableLiveData<PriceCurrencyUnit>()
@@ -29,26 +29,26 @@ class SettingViewModel @Inject constructor(
     // ✅ 데이터 저장
     fun savePriceCurrencyUnit(priceCurrencyUnit: PriceCurrencyUnit) {
         viewModelScope.launch {
-            settingDataStore.savePriceCurrencyUnit(priceCurrencyUnit)
+            settingRepository.savePriceCurrencyUnit(priceCurrencyUnit)
         }
     }
 
     fun saveLanguage(language: Language) {
         viewModelScope.launch {
-            settingDataStore.saveLanguage(language)
+            settingRepository.saveLanguage(language)
         }
     }
 
     fun saveHowToShowSymbols(howToShowSymbols: HowToShowSymbols) {
         viewModelScope.launch {
-            settingDataStore.saveHowToShowSymbols(howToShowSymbols)
+            settingRepository.saveHowToShowSymbols(howToShowSymbols)
         }
     }
 
     // ✅ 데이터 조회
     fun getPriceCurrencyUnit() {
         viewModelScope.launch {
-            settingDataStore.getPriceCurrencyUnit().collect { selectType ->
+            settingRepository.getPriceCurrencyUnit().collect { selectType ->
                 _priceCurrencyUnit.value = selectType
             }
         }
@@ -56,7 +56,7 @@ class SettingViewModel @Inject constructor(
 
     fun getLanguage() {
         viewModelScope.launch {
-            settingDataStore.getLanguage().collect { selectType ->
+            settingRepository.getLanguage().collect { selectType ->
                 _language.value = selectType
             }
         }
@@ -64,7 +64,7 @@ class SettingViewModel @Inject constructor(
 
     fun getHowToShowSymbols() {
         viewModelScope.launch {
-            settingDataStore.getHowToShowSymbols().collect { selectType ->
+            settingRepository.getHowToShowSymbols().collect { selectType ->
                 _howToShowSymbols.value = selectType
             }
         }
