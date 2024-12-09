@@ -59,16 +59,21 @@ class SettingFragment :
     }
 
     private fun observeSelectType() {
-        fragmentViewModel.priceCurrencyUnit.observe(viewLifecycleOwner, Observer { priceCurrencyUnit ->
-            binding.switchPriceCurrency.isChecked = (priceCurrencyUnit.value != PriceCurrencyUnit.DEFAULT.value)
-        })
+        fragmentViewModel.apply {
+            priceCurrencyUnit.observe(viewLifecycleOwner, Observer { priceCurrencyUnit ->
+                binding.switchPriceCurrency.isChecked =
+                    (priceCurrencyUnit.value != PriceCurrencyUnit.DEFAULT.value)
+            })
 
-        fragmentViewModel.language.observe(viewLifecycleOwner, Observer { language ->
-            binding.switchLanguage.isChecked = (language.value != Language.DEFAULT.value)
-        })
+            language.observe(viewLifecycleOwner, Observer { language ->
+                binding.switchLanguage.isChecked =
+                    (language.value != Language.DEFAULT.value)
+            })
 
-        fragmentViewModel.howToShowSymbols.observe(viewLifecycleOwner, Observer { howToShowSymbols ->
-            binding.switchShowSymbolGrid.isChecked = (howToShowSymbols.value != HowToShowSymbols.DEFAULT.value)
-        })
+            howToShowSymbols.observe(viewLifecycleOwner, Observer { howToShowSymbols ->
+                binding.switchShowSymbolGrid.isChecked =
+                    (howToShowSymbols.value != HowToShowSymbols.DEFAULT.value)
+            })
+        }
     }
 }
