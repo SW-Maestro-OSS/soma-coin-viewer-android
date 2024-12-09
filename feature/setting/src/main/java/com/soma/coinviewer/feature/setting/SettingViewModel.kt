@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
-import com.soma.coinviewer.domain.datastore.PriceCurrencyUnit
-import com.soma.coinviewer.domain.datastore.Language
-import com.soma.coinviewer.domain.datastore.HowToShowSymbols
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
+import com.soma.coinviewer.domain.preferences.Language
+import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.domain.repository.SettingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

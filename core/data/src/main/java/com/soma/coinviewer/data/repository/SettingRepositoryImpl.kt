@@ -1,9 +1,9 @@
 package com.soma.coinviewer.data.repository
 
-import com.soma.coinviewer.data.datastore.LocalSettingDataSource
-import com.soma.coinviewer.domain.datastore.HowToShowSymbols
-import com.soma.coinviewer.domain.datastore.Language
-import com.soma.coinviewer.domain.datastore.PriceCurrencyUnit
+import com.soma.coinviewer.data.datasource.LocalSettingDataSource
+import com.soma.coinviewer.domain.preferences.HowToShowSymbols
+import com.soma.coinviewer.domain.preferences.Language
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import com.soma.coinviewer.domain.repository.SettingRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
