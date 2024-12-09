@@ -1,8 +1,8 @@
 package com.soma.coinviewer.domain.repository
 
-import com.soma.coinviewer.domain.datastore.HowToShowSymbols
-import com.soma.coinviewer.domain.datastore.Language
-import com.soma.coinviewer.domain.datastore.PriceCurrencyUnit
+import com.soma.coinviewer.domain.preferences.HowToShowSymbols
+import com.soma.coinviewer.domain.preferences.Language
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import kotlinx.coroutines.flow.Flow
 
 interface SettingRepository {

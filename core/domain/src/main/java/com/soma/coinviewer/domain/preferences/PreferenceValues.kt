@@ -1,4 +1,4 @@
-package com.soma.coinviewer.domain.datastore
+package com.soma.coinviewer.domain.preferences
 
 enum class PriceCurrencyUnit(val value: String) {
     DOLLAR("dollar"),
