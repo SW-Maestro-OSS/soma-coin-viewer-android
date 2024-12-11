@@ -9,6 +9,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -18,11 +19,22 @@ class HomeViewModel @Inject constructor(
     private val binanceRepository: BinanceRepository,
     internal val navigationHelper: NavigationHelper,
 ) : BaseViewModel() {
-    private val _listSortType = MutableStateFlow<ListSortType>(ListSortType.TOTAL_TRADE)
+    private val _listSortType = MutableStateFlow(ListSortType.TOTAL_TRADE)
     val listSortType = _listSortType.asStateFlow()
 
     val coinData = binanceRepository.binanceTickerData
         .onEach { delay(200L) }
+        .map { list ->
+            when (_listSortType.value) {
+                ListSortType.TOTAL_TRADE -> list.sortedByDescending { it.totalTradedQuoteAssetVolume }
+                ListSortType.SYMBOL_ASC -> list.sortedBy { it.symbol }
+                ListSortType.SYMBOL_DESC -> list.sortedByDescending { it.symbol }
+                ListSortType.PRICE_ASC -> list.sortedBy { it.price }
+                ListSortType.PRICE_DESC -> list.sortedByDescending { it.price }
+                ListSortType.ONE_DAY_CHANGE_ASC -> list.sortedBy { it.priceChangePercent }
+                ListSortType.ONE_DAY_CHANGE_DESC -> list.sortedByDescending { it.priceChangePercent }
+            }
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -34,7 +46,7 @@ class HomeViewModel @Inject constructor(
 
         _listSortType.value = when (currentSortType) {
             asc -> desc
-            desc -> ListSortType.TOTAL_TRADE
+            desc -> asc
             else -> asc
         }
     }

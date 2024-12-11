@@ -73,98 +73,39 @@ private fun HomeScreen(
                 .padding(paddingValues),
         ) {
             Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(40.dp)
                     .background(Color.LightGray),
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable {
-                            updateSortType(ListSortType.SYMBOL_ASC, ListSortType.SYMBOL_DESC)
-                        },
-                ) {
-                    val sortImage = when (listSortType) {
-                        ListSortType.SYMBOL_ASC -> R.drawable.ic_up
-                        ListSortType.SYMBOL_DESC -> R.drawable.ic_down
-                        else -> R.drawable.ic_updown
-                    }
+                HeaderItem(
+                    text = stringResource(R.string.symbol),
+                    listSortType = listSortType,
+                    currentAscType = ListSortType.SYMBOL_ASC,
+                    currentDescType = ListSortType.SYMBOL_DESC,
+                    updateSortType = updateSortType,
+                    modifier = Modifier.weight(1f)
+                )
 
-                    Image(
-                        painter = painterResource(sortImage),
-                        contentDescription = "",
-                    )
+                HeaderItem(
+                    text = stringResource(R.string.price),
+                    listSortType = listSortType,
+                    currentAscType = ListSortType.PRICE_ASC,
+                    currentDescType = ListSortType.PRICE_DESC,
+                    updateSortType = updateSortType,
+                    modifier = Modifier.weight(1f)
+                )
 
-                    Text(
-                        text = stringResource(R.string.symbol),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Start,
-                    )
-                }
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable {
-                            updateSortType(ListSortType.PRICE_ASC, ListSortType.PRICE_DESC)
-                        },
-                ) {
-                    val sortImage = when (listSortType) {
-                        ListSortType.PRICE_ASC -> R.drawable.ic_up
-                        ListSortType.PRICE_DESC -> R.drawable.ic_down
-                        else -> R.drawable.ic_updown
-                    }
-
-                    Image(
-                        painter = painterResource(sortImage),
-                        contentDescription = "",
-                    )
-
-                    Text(
-                        text = stringResource(R.string.price),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable {
-                            updateSortType(
-                                ListSortType.ONE_DAY_CHANGE_ASC,
-                                ListSortType.ONE_DAY_CHANGE_DESC
-                            )
-                        },
-                ) {
-                    val sortImage = when (listSortType) {
-                        ListSortType.ONE_DAY_CHANGE_ASC -> R.drawable.ic_up
-                        ListSortType.ONE_DAY_CHANGE_DESC -> R.drawable.ic_down
-                        else -> R.drawable.ic_updown
-                    }
-
-                    Image(
-                        painter = painterResource(sortImage),
-                        contentDescription = "",
-                    )
-
-                    Text(
-                        text = stringResource(R.string.change_24h),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
+                HeaderItem(
+                    text = stringResource(R.string.change_24h),
+                    listSortType = listSortType,
+                    currentAscType = ListSortType.ONE_DAY_CHANGE_ASC,
+                    currentDescType = ListSortType.ONE_DAY_CHANGE_DESC,
+                    updateSortType = updateSortType,
+                    modifier = Modifier.weight(1f)
+                )
             }
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -177,14 +118,45 @@ private fun HomeScreen(
                         navigateToCoinDetail = navigateToCoinDetail,
                     )
 
-                    if (idx != 29) {
+                    if (idx != coinData.lastIndex) {
                         HorizontalDivider(color = Color.DarkGray)
                     }
                 }
             }
-
-
         }
+    }
+}
+
+@Composable
+private fun HeaderItem(
+    text: String,
+    listSortType: ListSortType,
+    currentAscType: ListSortType,
+    currentDescType: ListSortType,
+    updateSortType: (ListSortType, ListSortType) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val sortImage = when (listSortType) {
+        currentAscType -> R.drawable.ic_up
+        currentDescType -> R.drawable.ic_down
+        else -> R.drawable.ic_updown
+    }
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.clickable { updateSortType(currentAscType, currentDescType) },
+    ) {
+        Image(
+            painter = painterResource(sortImage),
+            contentDescription = "",
+        )
+
+        Text(
+            text = text,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -198,8 +170,9 @@ private fun CoinItem(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp)
-            .clickable { navigateToCoinDetail(coinData.symbol) },
+            .height(60.dp)
+            .clickable { navigateToCoinDetail(coinData.symbol) }
+            .padding(horizontal = 4.dp),
     ) {
         AsyncImage(
             model = coinData.coinIconUrl,
@@ -207,7 +180,7 @@ private fun CoinItem(
             error = painterResource(com.soma.coinviewer.common_ui.R.drawable.ic_coin_placeholder),
             onError = { Log.w("Img Error", coinData.coinIconUrl) },
             contentDescription = "",
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(40.dp),
         )
 
         Text(
