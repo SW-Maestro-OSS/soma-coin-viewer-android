@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -9,16 +11,28 @@ android {
     namespace = "com.soma.coinviewer.data"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
+    val properties = Properties()
+    properties.load(project.rootProject.file("local.properties").bufferedReader())
+
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            type = "String",
+            name = "OPEN_API_KEY",
+            value = "\"${properties["OPEN_API_KEY"]}\"",
+        )
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -48,6 +62,8 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     // Network
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.gson.converter)
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
     implementation(libs.gson)

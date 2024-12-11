@@ -1,8 +1,8 @@
-package com.soma.coinviewer.data.datasource
+package com.soma.coinviewer.data.network.datasource
 
-import com.soma.coinviewer.data.listener.BinanceListener
-import com.soma.coinviewer.data.model.BinanceTickerResponse
-import kotlinx.coroutines.flow.Flow
+import com.soma.coinviewer.data.network.listener.BinanceListener
+import com.soma.coinviewer.data.network.model.BinanceTickerResponse
+import kotlinx.coroutines.flow.StateFlow
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
@@ -15,13 +15,15 @@ class BinanceDataSource @Inject constructor(
 ) {
     private var webSocket: WebSocket? = null
 
-    fun connect(): Flow<Array<BinanceTickerResponse>> {
+    fun connect() {
         webSocket = okHttpClient.newWebSocket(request, binanceListener)
-        return binanceListener.responseMessage
     }
 
     fun disconnect() {
         webSocket?.close(1000, "Close Binance")
         webSocket = null
     }
+
+    fun subscribeWebSocket(): StateFlow<Array<BinanceTickerResponse>?> =
+        binanceListener.responseMessage
 }

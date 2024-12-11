@@ -1,7 +1,7 @@
-package com.soma.coinviewer.data.model
+package com.soma.coinviewer.data.network.model
 
 import com.google.gson.annotations.SerializedName
-import com.soma.coinviewer.domain.entity.BinanceTickerData
+import com.soma.coinviewer.domain.model.BinanceTickerData
 import java.math.BigDecimal
 
 data class BinanceTickerResponse(
