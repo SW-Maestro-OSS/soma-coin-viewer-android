@@ -13,3 +13,14 @@ data class BinanceTickerData(
         const val BINANCE_TICKER_DATA_MAX_SIZE = 30
     }
 }
+
+data class BinanceTickerKey(
+    val volume: BigDecimal,
+    val symbol: String
+) : Comparable<BinanceTickerKey> {
+    override fun compareTo(other: BinanceTickerKey): Int {
+        return compareBy<BinanceTickerKey> { it.volume }
+            .thenBy { it.symbol }
+            .compare(this, other)
+    }
+}

@@ -26,7 +26,7 @@ data class BinanceTickerResponse(
 ) {
     fun toVO() = BinanceTickerData(
         symbol = symbol ?: "",
-        totalTradedQuoteAssetVolume = lastPrice?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+        totalTradedQuoteAssetVolume = totalTradedQuoteAssetVolume?.toBigDecimalOrNull() ?: BigDecimal(0.0),
         price = lastPrice?.toBigDecimalOrNull() ?: BigDecimal(0.0),
         priceChangePercent = priceChangePercent?.toBigDecimalOrNull() ?: BigDecimal(0.0),
         coinIconUrl = "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32/icon/${symbol?.removeSuffix(
