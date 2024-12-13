@@ -1,8 +1,8 @@
 package com.soma.coinviewer.domain.preferences
 
 enum class PriceCurrencyUnit(val value: String) {
-    DOLLAR("dollar"),
-    WON("won"),
+    DOLLAR("USD"),
+    WON("WON"),
     DEFAULT(DOLLAR.value);
 
     companion object {

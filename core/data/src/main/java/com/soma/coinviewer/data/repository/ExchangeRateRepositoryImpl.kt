@@ -1,8 +1,7 @@
 package com.soma.coinviewer.data.repository
 
-import android.util.Log
-import com.soma.coinviewer.data.network.datasource.ExchangeRateDataSource
-import com.soma.coinviewer.data.network.util.onResponse
+import com.soma.coinviewer.data.datastore.datasource.LocalExchangeRateDataSource
+import com.soma.coinviewer.data.network.datasource.RemoteExchangeRateDataSource
 import com.soma.coinviewer.domain.model.ExchangeRate
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
 import java.time.LocalDate
@@ -10,7 +9,8 @@ import java.time.ZoneId
 import javax.inject.Inject
 
 class ExchangeRateRepositoryImpl @Inject constructor(
-    private val exchangeRateDataSource: ExchangeRateDataSource,
+    private val remoteExchangeRateDataSource: RemoteExchangeRateDataSource,
+    private val localExchangeRateDataSource: LocalExchangeRateDataSource,
 ) : ExchangeRateRepository {
 
     /**
@@ -22,13 +22,13 @@ class ExchangeRateRepositoryImpl @Inject constructor(
      */
     override suspend fun getExchangeRate(): List<ExchangeRate> {
         val today = LocalDate.now(ZoneId.of("Asia/Seoul"))
-        val result = exchangeRateDataSource.getExchangeRate(today)
+        val result = remoteExchangeRateDataSource.getExchangeRate(today)
 
         if (result.isNotEmpty()) {
             return result.map { it.toVO() }
         }
 
-        return exchangeRateDataSource.getExchangeRate(today.minusDays(1))
+        return remoteExchangeRateDataSource.getExchangeRate(today.minusDays(1))
             .map { it.toVO() }
     }
 }
