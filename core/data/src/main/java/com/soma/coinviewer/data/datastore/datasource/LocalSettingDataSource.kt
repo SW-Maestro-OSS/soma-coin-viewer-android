@@ -1,12 +1,12 @@
-package com.soma.coinviewer.data.datasource
+package com.soma.coinviewer.data.datastore.datasource
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.soma.coinviewer.data.preferences.PreferenceKeys
-import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
-import com.soma.coinviewer.domain.preferences.Language
+import com.soma.coinviewer.data.datastore.preferences.PreferenceKeys
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
+import com.soma.coinviewer.domain.preferences.Language
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

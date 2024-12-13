@@ -1,6 +1,6 @@
 package com.soma.coinviewer.data.repository
 
-import com.soma.coinviewer.data.datasource.LocalSettingDataSource
+import com.soma.coinviewer.data.datastore.datasource.LocalSettingDataSource
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.domain.preferences.Language
 import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
