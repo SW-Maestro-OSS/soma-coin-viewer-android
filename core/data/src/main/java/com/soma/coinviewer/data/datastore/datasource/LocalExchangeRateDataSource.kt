@@ -20,7 +20,7 @@ class LocalExchangeRateDataSource @Inject constructor(
         ) { it.toString() }
     }
 
-    fun getPriceCurrencyUnit(currencyUnit: CurrencyCode): Flow<ExchangeRate> {
+    fun getExchangeRate(currencyUnit: CurrencyCode): Flow<ExchangeRate> {
         return dataStore.getPreference(
             stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + currencyUnit.value)
         ) { value ->

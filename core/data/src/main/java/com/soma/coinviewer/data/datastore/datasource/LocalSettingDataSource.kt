@@ -5,18 +5,18 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.soma.coinviewer.data.datastore.util.getPreference
 import com.soma.coinviewer.data.datastore.util.savePreference
+import com.soma.coinviewer.domain.preferences.CurrencyCode
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.domain.preferences.Language
-import com.soma.coinviewer.domain.preferences.CurrencyCode
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class LocalSettingDataSource @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) {
-    suspend fun savePriceCurrencyUnit(currencyCode: CurrencyCode) {
+    suspend fun saveCurrencyCode(currencyCode: CurrencyCode) {
         dataStore.savePreference(
-            SettingPreferenceKeys.PRICE_CURRENCY_UNIT.key,
+            SettingPreferenceKeys.CURRENCY_CODE.key,
             currencyCode
         ) { it.value }
     }
@@ -32,8 +32,8 @@ class LocalSettingDataSource @Inject constructor(
         ) { it.value }
     }
 
-    fun getPriceCurrencyUnit(): Flow<CurrencyCode> {
-        return dataStore.getPreference(SettingPreferenceKeys.PRICE_CURRENCY_UNIT.key) { value ->
+    fun getCurrencyCode(): Flow<CurrencyCode> {
+        return dataStore.getPreference(SettingPreferenceKeys.CURRENCY_CODE.key) { value ->
             CurrencyCode.fromValue(value)
         }
     }
@@ -52,7 +52,7 @@ class LocalSettingDataSource @Inject constructor(
 }
 
 enum class SettingPreferenceKeys(val key: Preferences.Key<String>) {
-    PRICE_CURRENCY_UNIT(stringPreferencesKey("price_currency_unit")),
+    CURRENCY_CODE(stringPreferencesKey("currency_code")),
     LANGUAGE(stringPreferencesKey("language")),
     HOW_TO_SHOW_SYMBOLS(stringPreferencesKey("how_to_show_symbols")),
 }

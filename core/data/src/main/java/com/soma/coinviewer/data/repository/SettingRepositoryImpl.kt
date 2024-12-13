@@ -12,7 +12,7 @@ class SettingRepositoryImpl @Inject constructor(
     private val localSettingDataSource: LocalSettingDataSource
 ) : SettingRepository {
     override suspend fun savePriceCurrencyUnit(currencyCode: CurrencyCode) {
-        localSettingDataSource.savePriceCurrencyUnit(currencyCode)
+        localSettingDataSource.saveCurrencyCode(currencyCode)
     }
 
     override suspend fun saveLanguage(language: Language) {
@@ -24,7 +24,7 @@ class SettingRepositoryImpl @Inject constructor(
     }
 
     override fun getPriceCurrencyUnit(): Flow<CurrencyCode> {
-        return localSettingDataSource.getPriceCurrencyUnit()
+        return localSettingDataSource.getCurrencyCode()
     }
 
     override fun getLanguage(): Flow<Language> {

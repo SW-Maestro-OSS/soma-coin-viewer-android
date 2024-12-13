@@ -40,7 +40,7 @@ class ExchangeRateRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getExchangeRate(currencyCode: CurrencyCode): ExchangeRate {
-        return localExchangeRateDataSource.getPriceCurrencyUnit(currencyCode).last()
+        return localExchangeRateDataSource.getExchangeRate(currencyCode).last()
     }
 
     companion object {
