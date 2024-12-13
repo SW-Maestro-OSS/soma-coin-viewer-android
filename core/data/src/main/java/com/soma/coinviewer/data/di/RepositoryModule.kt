@@ -33,4 +33,5 @@ interface RepositoryModule {
     fun bindsExchangeRateRepository(
         exchangeRateRepositoryImpl: ExchangeRateRepositoryImpl
     ): ExchangeRateRepository
+
 }
