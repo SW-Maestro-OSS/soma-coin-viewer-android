@@ -35,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         observeViewModel()
     }
 
-    override fun onRestart() {
-        super.onRestart()
+    override fun onStart() {
+        super.onStart()
         viewModel.connectWebSocket()
     }
 
