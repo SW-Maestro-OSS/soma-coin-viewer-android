@@ -23,7 +23,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -36,7 +39,7 @@ android {
         jvmTarget = libs.versions.jvmTarget.get()
     }
 
-    buildFeatures{
+    buildFeatures {
         dataBinding = true
     }
 }
@@ -46,12 +49,9 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
 
-    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    testImplementation(libs.testng)
-    androidTestImplementation(libs.junit)
-    implementation(libs.androidx.monitor)
-    implementation(libs.androidx.test.ext)
+    testImplementation(libs.junit4)
+    androidTestImplementation(libs.androidx.junit)
 }

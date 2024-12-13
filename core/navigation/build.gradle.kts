@@ -43,8 +43,6 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    testImplementation(libs.testng)
-    androidTestImplementation(libs.junit)
-    implementation(libs.androidx.monitor)
-    implementation(libs.androidx.test.ext)
+    testImplementation(libs.junit4)
+    androidTestImplementation(libs.androidx.junit)
 }

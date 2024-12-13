@@ -46,8 +46,7 @@ dependencies {
     implementation(project(":feature:setting"))
     implementation(project(":feature:splash"))
     implementation(project(":feature:coin-detail"))
-
-    // Hilt
+    
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
@@ -59,7 +58,6 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
 
-    // Test
     testImplementation(libs.junit4)
     androidTestImplementation(libs.androidx.junit)
 }

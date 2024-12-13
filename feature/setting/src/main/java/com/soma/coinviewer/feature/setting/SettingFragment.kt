@@ -21,12 +21,10 @@ class SettingFragment :
 
         observeSelectType()
 
-        // 이전 선택 정보 불러오기
         fragmentViewModel.getPriceCurrencyUnit()
         fragmentViewModel.getLanguage()
         fragmentViewModel.getHowToShowSymbols()
 
-        // ✅ Switch Listener
         binding.switchPriceCurrency.setOnCheckedChangeListener { _, isChecked ->
             val selectCurrencyCode = if (isChecked) {
                 CurrencyCode.WON

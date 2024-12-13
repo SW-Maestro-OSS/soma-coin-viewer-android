@@ -45,20 +45,16 @@ android {
 }
 
 dependencies {
-    // Xml
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
 
-    // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.andriodx.compose.compiler)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.lifecycle.runtimeCompose)
 
-    testImplementation(libs.testng)
-    androidTestImplementation(libs.junit)
-    implementation(libs.androidx.monitor)
-    implementation(libs.androidx.test.ext)
+    testImplementation(libs.junit4)
+    androidTestImplementation(libs.androidx.junit)
 }

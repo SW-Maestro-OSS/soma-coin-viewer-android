@@ -1,6 +1,5 @@
 package com.soma.coinviewer.data.datastore.datasource
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -18,17 +17,14 @@ class LocalExchangeRateDataSource @Inject constructor(
         dataStore.savePreference(
             stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + exchangeRate.currencyCode.value),
             exchangeRate,
-        ) {
-            Log.d("test", "$it 을 저장하였습니다.")
-            it.toString()
-        }
+        ) { it.toString() }
     }
 
     fun getPriceCurrencyUnit(currencyUnit: CurrencyCode): Flow<ExchangeRate> {
         return dataStore.getPreference(
             stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + currencyUnit.value)
-        ) { data ->
-            data?.let { ExchangeRate.fromString(it) }
+        ) { value ->
+            value?.let { ExchangeRate.fromString(it) }
                 ?: throw IllegalArgumentException("환율 데이터를 찾을 수 없습니다.")
         }
     }

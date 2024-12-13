@@ -50,7 +50,6 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:navigation"))
 
-    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
@@ -58,7 +57,6 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
 
-    // Compose
     implementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -71,7 +69,6 @@ dependencies {
 
     implementation(libs.coil.compose)
 
-    // Test
     testImplementation(libs.junit4)
     androidTestImplementation(libs.androidx.junit)
 }
