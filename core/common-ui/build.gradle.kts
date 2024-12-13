@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.lifecycle.runtimeCompose)
 
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    testImplementation(libs.testng)
+    androidTestImplementation(libs.junit)
+    implementation(libs.androidx.monitor)
+    implementation(libs.androidx.test.ext)
 }

@@ -90,6 +90,9 @@ ktlint = "12.1.1"
 coil = "2.7.0"
 legacySupportV4 = "1.0.0"
 lifecycleLivedataKtx = "2.8.6"
+testng = "6.9.6"
+junit = "4.12"
+monitor = "1.7.2"
 
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
@@ -148,6 +151,9 @@ coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+testng = { group = "org.testng", name = "testng", version.ref = "testng" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 
 [bundles]
 
