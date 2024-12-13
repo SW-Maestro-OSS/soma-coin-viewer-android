@@ -1,7 +1,7 @@
 package com.soma.coinviewer.data.repository
 
 import com.soma.coinviewer.data.datastore.datasource.LocalSettingDataSource
-import com.soma.coinviewer.domain.preferences.CurrencyCode
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.domain.preferences.Language
 import com.soma.coinviewer.domain.repository.SettingRepository
@@ -11,19 +11,19 @@ import javax.inject.Inject
 class SettingRepositoryImpl @Inject constructor(
     private val localSettingDataSource: LocalSettingDataSource
 ) : SettingRepository {
-    override suspend fun savePriceCurrencyUnit(currencyCode: CurrencyCode) {
-        localSettingDataSource.saveCurrencyCode(currencyCode)
+    override suspend fun savePriceCurrencyUnit(priceCurrencyUnit: PriceCurrencyUnit) {
+        localSettingDataSource.setCurrencyCode(priceCurrencyUnit)
     }
 
     override suspend fun saveLanguage(language: Language) {
-        localSettingDataSource.saveLanguage(language)
+        localSettingDataSource.setLanguage(language)
     }
 
     override suspend fun saveHowToShowSymbols(howToShowSymbols: HowToShowSymbols) {
-        localSettingDataSource.saveHowToShowSymbols(howToShowSymbols)
+        localSettingDataSource.setHowToShowSymbols(howToShowSymbols)
     }
 
-    override fun getPriceCurrencyUnit(): Flow<CurrencyCode> {
+    override fun getPriceCurrencyUnit(): Flow<PriceCurrencyUnit> {
         return localSettingDataSource.getCurrencyCode()
     }
 

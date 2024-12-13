@@ -5,7 +5,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.soma.coinviewer.common_ui.base.BaseBindingFragment
-import com.soma.coinviewer.domain.preferences.CurrencyCode
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import com.soma.coinviewer.domain.preferences.Language
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.feature.setting.databinding.FragmentSettingBinding
@@ -26,13 +26,13 @@ class SettingFragment :
         fragmentViewModel.getHowToShowSymbols()
 
         binding.switchPriceCurrency.setOnCheckedChangeListener { _, isChecked ->
-            val selectCurrencyCode = if (isChecked) {
-                CurrencyCode.WON
+            val selectPriceCurrencyUnit = if (isChecked) {
+                PriceCurrencyUnit.WON
             } else {
-                CurrencyCode.DEFAULT
+                PriceCurrencyUnit.DEFAULT
             }
 
-            fragmentViewModel.savePriceCurrencyUnit(selectCurrencyCode)
+            fragmentViewModel.savePriceCurrencyUnit(selectPriceCurrencyUnit)
         }
 
         binding.switchLanguage.setOnCheckedChangeListener { _, isChecked ->
@@ -58,9 +58,9 @@ class SettingFragment :
 
     private fun observeSelectType() {
         fragmentViewModel.apply {
-            currencyCode.observe(viewLifecycleOwner, Observer { priceCurrencyUnit ->
+            priceCurrencyUnit.observe(viewLifecycleOwner, Observer { priceCurrencyUnit ->
                 binding.switchPriceCurrency.isChecked =
-                    (priceCurrencyUnit.value != CurrencyCode.DEFAULT.value)
+                    (priceCurrencyUnit.currencyCode != PriceCurrencyUnit.DEFAULT.currencyCode)
             })
 
             language.observe(viewLifecycleOwner, Observer { language ->

@@ -1,15 +1,15 @@
 package com.soma.coinviewer.domain.model
 
-import com.soma.coinviewer.domain.preferences.CurrencyCode
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import java.math.BigDecimal
 
 data class ExchangeRate(
-    val currencyCode: CurrencyCode,
+    val priceCurrencyUnit: PriceCurrencyUnit,
     val receiveRateInWon: BigDecimal,
     val sendRateToForeignCurrency: BigDecimal,
 ) {
     override fun toString(): String {
-        return "currencyCode=${currencyCode.value}," +
+        return "currencyCode=${priceCurrencyUnit.currencyCode}," +
                 "receiveRateInWon=$receiveRateInWon," +
                 "sendRateToForeignCurrency=$sendRateToForeignCurrency"
     }
@@ -22,7 +22,7 @@ data class ExchangeRate(
             }
 
             return ExchangeRate(
-                currencyCode = CurrencyCode.fromValue(
+                priceCurrencyUnit = PriceCurrencyUnit.fromValue(
                     properties["currencyCode"]
                         ?: throw IllegalArgumentException("currencyCode가 유효하지 않습니다.")
                 ),

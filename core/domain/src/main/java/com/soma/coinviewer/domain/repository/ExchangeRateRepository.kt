@@ -1,9 +1,9 @@
 package com.soma.coinviewer.domain.repository
 
 import com.soma.coinviewer.domain.model.ExchangeRate
-import com.soma.coinviewer.domain.preferences.CurrencyCode
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 
 interface ExchangeRateRepository {
     suspend fun updateExchangeRate()
-    suspend fun getExchangeRate(currencyCode: CurrencyCode): ExchangeRate
+    suspend fun getExchangeRate(priceCurrencyUnit: PriceCurrencyUnit): ExchangeRate
 }
