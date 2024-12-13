@@ -22,7 +22,6 @@ class SplashViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val exchangeRateJob = getExchangeRate()
-
             delay(2000L) // 최소 2초는 기다립니다.
             exchangeRateJob.cancelAndJoin()
 

@@ -1,8 +1,9 @@
 package com.soma.coinviewer.data.repository
 
+import android.util.Log
 import com.soma.coinviewer.data.datastore.datasource.LocalExchangeRateDataSource
 import com.soma.coinviewer.data.network.datasource.RemoteExchangeRateDataSource
-import com.soma.coinviewer.domain.model.ExchangeRate
+import com.soma.coinviewer.domain.preferences.CurrencyCode
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
 import java.time.LocalDate
 import java.time.ZoneId
@@ -20,15 +21,28 @@ class ExchangeRateRepositoryImpl @Inject constructor(
      *
      * 응답 값이 **null**일 경우 하루 전의 데이터를 호출
      */
-    override suspend fun getExchangeRate(): List<ExchangeRate> {
-        val today = LocalDate.now(ZoneId.of("Asia/Seoul"))
+    override suspend fun getExchangeRate() {
+        Log.d("test", "getExchangeRate 호출")
+
+        val today = LocalDate.now(ZoneId.of(SEOUL_TIME_ZONE))
         val result = remoteExchangeRateDataSource.getExchangeRate(today)
 
+        Log.d("test", result.toString())
+
         if (result.isNotEmpty()) {
-            return result.map { it.toVO() }
+            result.map { it.toVO() }
+                .filter { it.currencyCode != CurrencyCode.DEFAULT }
+                .onEach { localExchangeRateDataSource.saveExchangeRate(it) }
+            return
         }
 
-        return remoteExchangeRateDataSource.getExchangeRate(today.minusDays(1))
+        remoteExchangeRateDataSource.getExchangeRate(today.minusDays(1))
             .map { it.toVO() }
+            .filter { it.currencyCode != CurrencyCode.DEFAULT }
+            .onEach { localExchangeRateDataSource.saveExchangeRate(it) }
+    }
+
+    companion object {
+        private const val SEOUL_TIME_ZONE = "Asia/Seoul"
     }
 }

@@ -1,4 +1,4 @@
-package com.soma.coinviewer.data.datastore
+package com.soma.coinviewer.data.datastore.util
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

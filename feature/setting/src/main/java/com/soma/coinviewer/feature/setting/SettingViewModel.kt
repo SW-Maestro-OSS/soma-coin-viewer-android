@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
-import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
+import com.soma.coinviewer.domain.preferences.CurrencyCode
 import com.soma.coinviewer.domain.preferences.Language
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.domain.repository.SettingRepository
@@ -17,8 +17,8 @@ class SettingViewModel @Inject constructor(
     private val settingRepository: SettingRepository,
 ) : BaseViewModel() {
 
-    private val _priceCurrencyUnit = MutableLiveData<PriceCurrencyUnit>()
-    val priceCurrencyUnit: LiveData<PriceCurrencyUnit> get() = _priceCurrencyUnit
+    private val _CurrencyCode = MutableLiveData<CurrencyCode>()
+    val currencyCode: LiveData<CurrencyCode> get() = _CurrencyCode
 
     private val _language = MutableLiveData<Language>()
     val language: LiveData<Language> get() = _language
@@ -27,9 +27,9 @@ class SettingViewModel @Inject constructor(
     val howToShowSymbols: LiveData<HowToShowSymbols> get() = _howToShowSymbols
 
     // ✅ 데이터 저장
-    fun savePriceCurrencyUnit(priceCurrencyUnit: PriceCurrencyUnit) {
+    fun savePriceCurrencyUnit(currencyCode: CurrencyCode) {
         viewModelScope.launch {
-            settingRepository.savePriceCurrencyUnit(priceCurrencyUnit)
+            settingRepository.savePriceCurrencyUnit(currencyCode)
         }
     }
 
@@ -49,7 +49,7 @@ class SettingViewModel @Inject constructor(
     fun getPriceCurrencyUnit() {
         viewModelScope.launch {
             settingRepository.getPriceCurrencyUnit().collect { selectType ->
-                _priceCurrencyUnit.value = selectType
+                _CurrencyCode.value = selectType
             }
         }
     }

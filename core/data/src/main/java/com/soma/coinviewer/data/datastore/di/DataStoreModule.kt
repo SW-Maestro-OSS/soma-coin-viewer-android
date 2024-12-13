@@ -1,9 +1,10 @@
-package com.soma.coinviewer.data.di
+package com.soma.coinviewer.data.datastore.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.soma.coinviewer.data.datastore.datasource.LocalExchangeRateDataSource
 import com.soma.coinviewer.data.datastore.datasource.LocalSettingDataSource
 import dagger.Module
 import dagger.Provides
@@ -28,5 +29,11 @@ object DataStoreModule {
     @Singleton
     fun provideLocalSettingDataSource(dataStore: DataStore<Preferences>): LocalSettingDataSource {
         return LocalSettingDataSource(dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocalExchangeRateDataSource(dataStore: DataStore<Preferences>): LocalExchangeRateDataSource {
+        return LocalExchangeRateDataSource(dataStore)
     }
 }

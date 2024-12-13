@@ -1,15 +1,17 @@
 package com.soma.coinviewer.domain.model
 
-import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
+import com.soma.coinviewer.domain.preferences.CurrencyCode
 import java.math.BigDecimal
 
 data class ExchangeRate(
-    val currencyCode: PriceCurrencyUnit,
+    val currencyCode: CurrencyCode,
     val receiveRateInWon: BigDecimal,
     val sendRateToForeignCurrency: BigDecimal,
 ) {
     override fun toString(): String {
-        return "currencyCode=${currencyCode.value},receiveRateInWon=$receiveRateInWon,sendRateToForeignCurrency=$sendRateToForeignCurrency"
+        return "currencyCode=${currencyCode.value}," +
+                "receiveRateInWon=$receiveRateInWon," +
+                "sendRateToForeignCurrency=$sendRateToForeignCurrency"
     }
 
     companion object {
@@ -20,18 +22,19 @@ data class ExchangeRate(
             }
 
             return ExchangeRate(
-                currencyCode = PriceCurrencyUnit.fromValue(
+                currencyCode = CurrencyCode.fromValue(
                     properties["currencyCode"]
-                        ?: throw IllegalArgumentException("Invalid currencyCode")
+                        ?: throw IllegalArgumentException("currencyCode가 유효하지 않습니다.")
                 ),
                 receiveRateInWon = BigDecimal(
                     properties["receiveRateInWon"]
-                        ?: throw IllegalArgumentException("Invalid receiveRateInWon")
+                        ?: throw IllegalArgumentException("receiveRateInWon가 유효하지 않습니다.")
                 ),
                 sendRateToForeignCurrency = BigDecimal(
                     properties["sendRateToForeignCurrency"]
-                        ?: throw IllegalArgumentException("Invalid sendRateToForeignCurrency")
+                        ?: throw IllegalArgumentException("sendRateToForeignCurrency가 유효하지 않습니다.")
                 ),
             )
         }
     }
+}
