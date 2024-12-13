@@ -35,6 +35,6 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun getExchangeRate() = viewModelScope.launch(exceptionHandler) {
-        exchangeRateRepository.getExchangeRate()
+        exchangeRateRepository.updateExchangeRate()
     }
 }

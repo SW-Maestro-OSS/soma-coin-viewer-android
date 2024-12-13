@@ -2,8 +2,10 @@ package com.soma.coinviewer.data.repository
 
 import com.soma.coinviewer.data.datastore.datasource.LocalExchangeRateDataSource
 import com.soma.coinviewer.data.network.datasource.RemoteExchangeRateDataSource
+import com.soma.coinviewer.domain.model.ExchangeRate
 import com.soma.coinviewer.domain.preferences.CurrencyCode
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
+import kotlinx.coroutines.flow.last
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
@@ -20,7 +22,7 @@ class ExchangeRateRepositoryImpl @Inject constructor(
      *
      * 응답 값이 **null**일 경우 하루 전의 데이터를 호출
      */
-    override suspend fun getExchangeRate() {
+    override suspend fun updateExchangeRate() {
         val today = LocalDate.now(ZoneId.of(SEOUL_TIME_ZONE))
         val result = remoteExchangeRateDataSource.getExchangeRate(today)
 
@@ -35,6 +37,10 @@ class ExchangeRateRepositoryImpl @Inject constructor(
             .map { it.toVO() }
             .filter { it.currencyCode != CurrencyCode.DEFAULT }
             .onEach { localExchangeRateDataSource.saveExchangeRate(it) }
+    }
+
+    override suspend fun getExchangeRate(currencyCode: CurrencyCode): ExchangeRate {
+        return localExchangeRateDataSource.getPriceCurrencyUnit(currencyCode).last()
     }
 
     companion object {
