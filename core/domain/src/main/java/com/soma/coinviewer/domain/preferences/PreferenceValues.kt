@@ -1,14 +1,14 @@
 package com.soma.coinviewer.domain.preferences
 
-enum class PriceCurrencyUnit(val value: String) {
-    DOLLAR("dollar"),
-    WON("won"),
-    DEFAULT(DOLLAR.value);
+enum class PriceCurrencyUnit(val currencyCode: String) {
+    DOLLAR("USD"),
+    WON("WON"),
+    DEFAULT(DOLLAR.currencyCode);
 
     companion object {
         // 아직 설정된 값이 없거나 잘못된 값이면, Default 값 설정
         fun fromValue(value: String?): PriceCurrencyUnit {
-            return entries.find { it.value == value } ?: DEFAULT
+            return entries.find { it.currencyCode == value } ?: DEFAULT
         }
     }
 }

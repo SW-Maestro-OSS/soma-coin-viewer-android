@@ -2,11 +2,10 @@ package com.soma.coinviewer.data.network.model
 
 import com.google.gson.annotations.SerializedName
 import com.soma.coinviewer.domain.model.ExchangeRate
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import java.math.BigDecimal
 
 /**
- * ExchangeRateResponse는 특정 통화의 환율 데이터를 나타냅니다.
- *
  * @property result 조회 결과:
  *                  1: 성공,
  *                  2: DATA 코드 오류,
@@ -14,8 +13,8 @@ import java.math.BigDecimal
  *                  4: 일일 제한 초과.
  * @property currencyCode 통화 코드 (예: "USD").
  * @property currencyName 국가 및 통화 이름 (예: "미국 달러").
- * @property remittanceReceiveRate 전신환(송금) 받을 때의 환율.
- * @property remittanceSendRate 전신환(송금) 보낼 때의 환율.
+ * @property receiveRateInWon 전신환(송금) 받을 때의 환율.
+ * @property sendRateToForeignCurrency 전신환(송금) 보낼 때의 환율.
  * @property baseExchangeRate 매매 기준율.
  * @property bookValueRate 장부 가격.
  * @property yearlyExchangeFeeRate 연간 환가료율.
@@ -28,8 +27,8 @@ data class ExchangeRateResponse(
     @SerializedName("result") val result: Int,
     @SerializedName("cur_unit") val currencyCode: String,
     @SerializedName("cur_nm") val currencyName: String,
-    @SerializedName("ttb") val remittanceReceiveRate: String,
-    @SerializedName("tts") val remittanceSendRate: String,
+    @SerializedName("ttb") val receiveRateInWon: String,
+    @SerializedName("tts") val sendRateToForeignCurrency: String,
     @SerializedName("deal_bar_r") val baseExchangeRate: String,
     @SerializedName("bkpr") val bookValueRate: String,
     @SerializedName("yy_efee_r") val yearlyExchangeFeeRate: String,
@@ -38,9 +37,8 @@ data class ExchangeRateResponse(
     @SerializedName("kftc_bkpr") val seoulFxBookValueRate: String,
 ) {
     fun toVO() = ExchangeRate(
-        currencyCode = currencyCode,
-        currencyName = currencyName,
-        remittanceSendRate = BigDecimal(remittanceSendRate.replace(",", "")),
-        remittanceReceiveRate = BigDecimal(remittanceReceiveRate.replace(",", "")),
+        priceCurrencyUnit = PriceCurrencyUnit.fromValue(currencyCode),
+        sendRateToForeignCurrency = BigDecimal(sendRateToForeignCurrency.replace(",", "")),
+        receiveRateInWon = BigDecimal(receiveRateInWon.replace(",", "")),
     )
 }

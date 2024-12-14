@@ -69,4 +69,7 @@ dependencies {
     implementation(libs.gson)
 
     implementation(libs.androidx.datastore)
+
+    testImplementation(libs.junit4)
+    androidTestImplementation(libs.androidx.junit)
 }

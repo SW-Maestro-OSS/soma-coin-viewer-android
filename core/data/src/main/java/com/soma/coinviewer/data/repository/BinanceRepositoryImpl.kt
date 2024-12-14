@@ -23,12 +23,10 @@ class BinanceRepositoryImpl @Inject constructor(
         _binanceTickerData.asStateFlow()
 
     private val binanceTickerDataMap = TreeMap<BinanceTickerKey, BinanceTickerData>()
-
     private val isContainData = HashMap<String, BigDecimal>()
 
     override fun connect() = webSocketDataSource.connect()
     override fun disconnect() = webSocketDataSource.disconnect()
-
     override fun subscribeWebSocketData() {
         scope.launch {
             webSocketDataSource.subscribeWebSocket()

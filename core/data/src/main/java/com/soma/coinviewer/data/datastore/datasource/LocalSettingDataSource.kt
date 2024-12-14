@@ -2,68 +2,57 @@ package com.soma.coinviewer.data.datastore.datasource
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import com.soma.coinviewer.data.datastore.preferences.PreferenceKeys
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.soma.coinviewer.data.datastore.util.getPreference
+import com.soma.coinviewer.data.datastore.util.savePreference
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.domain.preferences.Language
-import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class LocalSettingDataSource @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) {
-    // ✅ 데이터 저장
-    suspend fun savePriceCurrencyUnit(priceCurrencyUnit: PriceCurrencyUnit) {
-        dataStore.savePreference(PreferenceKeys.PRICE_CURRENCY_UNIT.key, priceCurrencyUnit) { it.value }
+    suspend fun setCurrencyCode(priceCurrencyUnit: PriceCurrencyUnit) {
+        dataStore.savePreference(
+            SettingPreferenceKeys.CURRENCY_CODE.key,
+            priceCurrencyUnit
+        ) { it.currencyCode }
     }
 
-    suspend fun saveLanguage(language: Language) {
-        dataStore.savePreference(PreferenceKeys.LANGUAGE.key, language) { it.value }
+    suspend fun setLanguage(language: Language) {
+        dataStore.savePreference(SettingPreferenceKeys.LANGUAGE.key, language) { it.value }
     }
 
-    suspend fun saveHowToShowSymbols(howToShowSymbols: HowToShowSymbols) {
-        dataStore.savePreference(PreferenceKeys.HOW_TO_SHOW_SYMBOLS.key, howToShowSymbols) { it.value }
+    suspend fun setHowToShowSymbols(howToShowSymbols: HowToShowSymbols) {
+        dataStore.savePreference(
+            SettingPreferenceKeys.HOW_TO_SHOW_SYMBOLS.key,
+            howToShowSymbols
+        ) { it.value }
     }
 
-    // ✅ 데이터 조회
-    fun getPriceCurrencyUnit(): Flow<PriceCurrencyUnit> {
-        return dataStore.getPreference(PreferenceKeys.PRICE_CURRENCY_UNIT.key) { value ->
+    fun getCurrencyCode(): Flow<PriceCurrencyUnit> {
+        return dataStore.getPreference(SettingPreferenceKeys.CURRENCY_CODE.key) { value ->
             PriceCurrencyUnit.fromValue(value)
         }
     }
 
     fun getLanguage(): Flow<Language> {
-        return dataStore.getPreference(PreferenceKeys.LANGUAGE.key) { value ->
+        return dataStore.getPreference(SettingPreferenceKeys.LANGUAGE.key) { value ->
             Language.fromValue(value)
         }
     }
 
     fun getHowToShowSymbols(): Flow<HowToShowSymbols> {
-        return dataStore.getPreference(PreferenceKeys.HOW_TO_SHOW_SYMBOLS.key) { value ->
+        return dataStore.getPreference(SettingPreferenceKeys.HOW_TO_SHOW_SYMBOLS.key) { value ->
             HowToShowSymbols.fromValue(value)
         }
     }
 }
 
-// ✅ 함수 재사용을 위한 확장 함수 정의
-private suspend fun <T> DataStore<Preferences>.savePreference(
-    key: Preferences.Key<String>,
-    value: T,
-    transform: (T) -> String
-) {
-    edit { preferences ->
-        preferences[key] = transform(value)
-    }
-}
-
-private fun <T> DataStore<Preferences>.getPreference(
-    key: Preferences.Key<String>,
-    transform: (String?) -> T
-): Flow<T> {
-    return data.map { preferences ->
-        val value = preferences[key]
-        transform(value)
-    }
+enum class SettingPreferenceKeys(val key: Preferences.Key<String>) {
+    CURRENCY_CODE(stringPreferencesKey("currency_code")),
+    LANGUAGE(stringPreferencesKey("language")),
+    HOW_TO_SHOW_SYMBOLS(stringPreferencesKey("how_to_show_symbols")),
 }

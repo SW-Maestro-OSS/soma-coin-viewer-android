@@ -43,9 +43,7 @@ dependencies {
     implementation(project(":core:common-ui"))
     implementation(project(":core:navigation"))
 
-    // Hilt
     implementation(libs.hilt.android)
-    implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewModel)
     ksp(libs.hilt.compiler)
@@ -59,7 +57,6 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
 
-    // Test
     testImplementation(libs.junit4)
     androidTestImplementation(libs.androidx.junit)
 }

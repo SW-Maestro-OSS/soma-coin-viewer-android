@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
 import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
-import com.soma.coinviewer.domain.preferences.Language
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
+import com.soma.coinviewer.domain.preferences.Language
 import com.soma.coinviewer.domain.repository.SettingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -26,7 +26,6 @@ class SettingViewModel @Inject constructor(
     private val _howToShowSymbols = MutableLiveData<HowToShowSymbols>()
     val howToShowSymbols: LiveData<HowToShowSymbols> get() = _howToShowSymbols
 
-    // ✅ 데이터 저장
     fun savePriceCurrencyUnit(priceCurrencyUnit: PriceCurrencyUnit) {
         viewModelScope.launch {
             settingRepository.savePriceCurrencyUnit(priceCurrencyUnit)
@@ -45,7 +44,6 @@ class SettingViewModel @Inject constructor(
         }
     }
 
-    // ✅ 데이터 조회
     fun getPriceCurrencyUnit() {
         viewModelScope.launch {
             settingRepository.getPriceCurrencyUnit().collect { selectType ->

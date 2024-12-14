@@ -21,12 +21,10 @@ class SettingFragment :
 
         observeSelectType()
 
-        // 이전 선택 정보 불러오기
         fragmentViewModel.getPriceCurrencyUnit()
         fragmentViewModel.getLanguage()
         fragmentViewModel.getHowToShowSymbols()
 
-        // ✅ Switch Listener
         binding.switchPriceCurrency.setOnCheckedChangeListener { _, isChecked ->
             val selectPriceCurrencyUnit = if (isChecked) {
                 PriceCurrencyUnit.WON
@@ -62,7 +60,7 @@ class SettingFragment :
         fragmentViewModel.apply {
             priceCurrencyUnit.observe(viewLifecycleOwner, Observer { priceCurrencyUnit ->
                 binding.switchPriceCurrency.isChecked =
-                    (priceCurrencyUnit.value != PriceCurrencyUnit.DEFAULT.value)
+                    (priceCurrencyUnit.currencyCode != PriceCurrencyUnit.DEFAULT.currencyCode)
             })
 
             language.observe(viewLifecycleOwner, Observer { language ->
