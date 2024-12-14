@@ -17,8 +17,8 @@ class SettingViewModel @Inject constructor(
     private val settingRepository: SettingRepository,
 ) : BaseViewModel() {
 
-    private val _Price_currencyUnit = MutableLiveData<PriceCurrencyUnit>()
-    val priceCurrencyUnit: LiveData<PriceCurrencyUnit> get() = _Price_currencyUnit
+    private val _priceCurrencyUnit = MutableLiveData<PriceCurrencyUnit>()
+    val priceCurrencyUnit: LiveData<PriceCurrencyUnit> get() = _priceCurrencyUnit
 
     private val _language = MutableLiveData<Language>()
     val language: LiveData<Language> get() = _language
@@ -47,7 +47,7 @@ class SettingViewModel @Inject constructor(
     fun getPriceCurrencyUnit() {
         viewModelScope.launch {
             settingRepository.getPriceCurrencyUnit().collect { selectType ->
-                _Price_currencyUnit.value = selectType
+                _priceCurrencyUnit.value = selectType
             }
         }
     }
