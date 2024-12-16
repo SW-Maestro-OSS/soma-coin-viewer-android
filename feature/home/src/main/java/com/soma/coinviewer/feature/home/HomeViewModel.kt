@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
     private val _listSortType = MutableStateFlow(ListSortType.TOTAL_TRADE)
     val listSortType = _listSortType.asStateFlow()
 
-    val coinData = coinInfoRepository.coinInfoData
+    val coinData = coinInfoRepository.sortedCoinInfoData
         .onEach { delay(200L) }
         .map { list ->
             when (_listSortType.value) {

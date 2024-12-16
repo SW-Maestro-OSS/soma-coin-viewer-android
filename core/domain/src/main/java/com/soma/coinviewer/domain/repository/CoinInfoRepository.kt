@@ -4,7 +4,8 @@ import com.soma.coinviewer.domain.model.CoinInfoData
 import kotlinx.coroutines.flow.StateFlow
 
 interface CoinInfoRepository {
-    val coinInfoData: StateFlow<List<CoinInfoData>>
+    val sortedCoinInfoData: StateFlow<List<CoinInfoData>>
+    val coinInfoData: HashMap<String, CoinInfoData>
 
     fun connect()
     fun disconnect()

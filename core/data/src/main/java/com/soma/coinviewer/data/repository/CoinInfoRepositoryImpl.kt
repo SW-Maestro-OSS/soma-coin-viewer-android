@@ -18,15 +18,14 @@ class CoinInfoRepositoryImpl @Inject constructor(
     private val webSocketDataSource: CoinInfoDataSource,
     private val scope: CoroutineScope,
 ) : CoinInfoRepository {
-    private val _coinInfoData = MutableStateFlow<List<CoinInfoData>>(emptyList())
-    override val coinInfoData: StateFlow<List<CoinInfoData>> =
-        _coinInfoData.asStateFlow()
+    private val _sortedCoinInfoData = MutableStateFlow<List<CoinInfoData>>(emptyList())
+    override val sortedCoinInfoData: StateFlow<List<CoinInfoData>> =
+        _sortedCoinInfoData.asStateFlow()
+
+    override val coinInfoData = HashMap<String, CoinInfoData>()
 
     private val coinInfoDataMap = TreeMap<CoinInfoKey, CoinInfoData>()
     private val isContainData = HashMap<String, BigDecimal>()
-
-    // Todo : Home화면에서 필요한 데이터는 정렬이 필요하므로 TreeMap을 사용.
-    //  Detail 페이지는 정렬이 필요없으니 우리 앱에 어디서든 저장할 수 있는 큰 Bucket(HashMap)이 필요함.
 
     override fun connect() = webSocketDataSource.connect()
     override fun disconnect() = webSocketDataSource.disconnect()
@@ -55,9 +54,12 @@ class CoinInfoRepositoryImpl @Inject constructor(
                             val lastEntry = coinInfoDataMap.pollLastEntry()
                             lastEntry?.key?.symbol?.let { isContainData.remove(it) }
                         }
+
+                        // CoinDetail 페이지를 위한 HashMap
+                        coinInfoData[symbol] = data
                     }
 
-                    _coinInfoData.value = coinInfoDataMap.map { it.value }
+                    _sortedCoinInfoData.value = coinInfoDataMap.map { it.value }
                 }
         }
     }
