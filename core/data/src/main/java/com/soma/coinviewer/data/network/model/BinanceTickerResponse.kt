@@ -1,7 +1,7 @@
 package com.soma.coinviewer.data.network.model
 
 import com.google.gson.annotations.SerializedName
-import com.soma.coinviewer.domain.model.BinanceTickerData
+import com.soma.coinviewer.domain.model.CoinInfoData
 import java.math.BigDecimal
 
 data class BinanceTickerResponse(
@@ -24,7 +24,7 @@ data class BinanceTickerResponse(
     @SerializedName("L") val lastTradeId: Long? = null,
     @SerializedName("n") val totalTrades: Int? = null,
 ) {
-    fun toVO() = BinanceTickerData(
+    fun toVO() = CoinInfoData(
         symbol = symbol ?: "",
         totalTradedQuoteAssetVolume = totalTradedQuoteAssetVolume?.toBigDecimalOrNull() ?: BigDecimal(0.0),
         price = lastPrice?.toBigDecimalOrNull() ?: BigDecimal(0.0),

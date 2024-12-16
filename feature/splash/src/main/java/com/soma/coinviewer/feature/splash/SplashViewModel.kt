@@ -19,6 +19,7 @@ class SplashViewModel @Inject constructor(
     private val exceptionHandler: CoroutineExceptionHandler,
     private val navigationHelper: NavigationHelper,
 ) : BaseViewModel() {
+
     init {
         viewModelScope.launch {
             val exchangeRateJob = getExchangeRate()

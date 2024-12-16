@@ -1,10 +1,10 @@
 package com.soma.coinviewer.domain.repository
 
-import com.soma.coinviewer.domain.model.BinanceTickerData
+import com.soma.coinviewer.domain.model.CoinInfoData
 import kotlinx.coroutines.flow.StateFlow
 
-interface BinanceRepository {
-    val binanceTickerData: StateFlow<List<BinanceTickerData>>
+interface CoinInfoRepository {
+    val coinInfoData: StateFlow<List<CoinInfoData>>
 
     fun connect()
     fun disconnect()
