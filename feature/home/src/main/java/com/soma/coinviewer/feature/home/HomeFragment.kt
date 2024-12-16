@@ -31,7 +31,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.soma.coinviewer.common_ui.base.BaseComposeFragment
-import com.soma.coinviewer.domain.model.BinanceTickerData
+import com.soma.coinviewer.domain.model.CoinInfoData
 import com.soma.coinviewer.navigation.DeepLinkRoute
 import com.soma.coinviewer.navigation.NavigationTarget
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,7 +62,7 @@ class HomeFragment : BaseComposeFragment() {
 @Composable
 private fun HomeScreen(
     listSortType: ListSortType,
-    coinData: List<BinanceTickerData>,
+    coinData: List<CoinInfoData>,
     updateSortType: (ListSortType, ListSortType) -> Unit,
     navigateToCoinDetail: (String) -> Unit,
 ) {
@@ -162,7 +162,7 @@ private fun HeaderItem(
 
 @Composable
 private fun CoinItem(
-    coinData: BinanceTickerData,
+    coinData: CoinInfoData,
     navigateToCoinDetail: (String) -> Unit,
 ) {
     Row(

@@ -8,7 +8,7 @@ import okhttp3.Request
 import okhttp3.WebSocket
 import javax.inject.Inject
 
-class BinanceDataSource @Inject constructor(
+class CoinInfoDataSource @Inject constructor(
     private val okHttpClient: OkHttpClient,
     private val request: Request,
     private val binanceListener: BinanceListener,

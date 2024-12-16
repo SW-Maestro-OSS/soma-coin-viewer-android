@@ -2,7 +2,7 @@ package com.soma.coinviewer.feature.home
 
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
-import com.soma.coinviewer.domain.repository.BinanceRepository
+import com.soma.coinviewer.domain.repository.CoinInfoRepository
 import com.soma.coinviewer.navigation.NavigationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -16,13 +16,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val binanceRepository: BinanceRepository,
+    private val coinInfoRepository: CoinInfoRepository,
     internal val navigationHelper: NavigationHelper,
 ) : BaseViewModel() {
     private val _listSortType = MutableStateFlow(ListSortType.TOTAL_TRADE)
     val listSortType = _listSortType.asStateFlow()
 
-    val coinData = binanceRepository.binanceTickerData
+    val coinData = coinInfoRepository.sortedCoinInfoData
         .onEach { delay(200L) }
         .map { list ->
             when (_listSortType.value) {

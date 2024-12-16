@@ -18,11 +18,7 @@ class LocalExchangeRateDataSource @Inject constructor(
         dataStore.savePreference(
             stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + exchangeRate.priceCurrencyUnit.currencyCode),
             exchangeRate,
-        ) {
-            "currencyCode=${it.priceCurrencyUnit.currencyCode}," +
-                    "receiveRateInWon=${it.receiveRateInWon}," +
-                    "sendRateToForeignCurrency=${it.sendRateToForeignCurrency}"
-        }
+        ) { it.toString() }
     }
 
     fun getExchangeRate(currencyUnit: PriceCurrencyUnit): Flow<ExchangeRate> {
@@ -30,26 +26,29 @@ class LocalExchangeRateDataSource @Inject constructor(
             stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + currencyUnit.currencyCode)
         ) { data ->
             data?.let {
-                val properties = it.split(",").associate {
-                    val (key, value) = it.split("=")
-                    key to value
-                }
+                val properties = it
+                    .removePrefix("ExchangeRate(").removeSuffix(")")
+                    .split(",")
+                    .associate {
+                        val (key, value) = it.split("=")
+                        key to value
+                    }
 
                 ExchangeRate(
                     priceCurrencyUnit = PriceCurrencyUnit.fromValue(
                         properties["currencyCode"]
-                            ?: throw IllegalArgumentException("currencyCode가 유효하지 않습니다.")
+                            ?: throw NullPointerException("currencyCode가 유효하지 않습니다.")
                     ),
                     receiveRateInWon = BigDecimal(
                         properties["receiveRateInWon"]
-                            ?: throw IllegalArgumentException("receiveRateInWon가 유효하지 않습니다.")
+                            ?: throw NullPointerException("receiveRateInWon가 유효하지 않습니다.")
                     ),
                     sendRateToForeignCurrency = BigDecimal(
                         properties["sendRateToForeignCurrency"]
-                            ?: throw IllegalArgumentException("sendRateToForeignCurrency가 유효하지 않습니다.")
+                            ?: throw NullPointerException("sendRateToForeignCurrency가 유효하지 않습니다.")
                     ),
                 )
-            } ?: throw IllegalArgumentException("환율 데이터를 찾을 수 없습니다.")
+            } ?: throw NullPointerException("환율 데이터를 찾을 수 없습니다.")
         }
     }
 
