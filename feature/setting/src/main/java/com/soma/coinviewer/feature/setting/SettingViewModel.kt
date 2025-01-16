@@ -1,14 +1,14 @@
 package com.soma.coinviewer.feature.setting
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
-import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.domain.preferences.Language
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import com.soma.coinviewer.domain.repository.SettingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,55 +16,63 @@ import javax.inject.Inject
 class SettingViewModel @Inject constructor(
     private val settingRepository: SettingRepository,
 ) : BaseViewModel() {
+    private val _isPriceCurrencyWon = MutableStateFlow(false)
+    val isPriceCurrencyWon = _isPriceCurrencyWon.asStateFlow()
 
-    private val _priceCurrencyUnit = MutableLiveData<PriceCurrencyUnit>()
-    internal val priceCurrencyUnit: LiveData<PriceCurrencyUnit> get() = _priceCurrencyUnit
+    private val _isLanguageKorean = MutableStateFlow(false)
+    val isLanguageKorean = _isLanguageKorean.asStateFlow()
 
-    private val _language = MutableLiveData<Language>()
-    internal val language: LiveData<Language> get() = _language
+    private val _isSymbolGrid = MutableStateFlow(false)
+    val isSymbolGrid = _isSymbolGrid.asStateFlow()
 
-    private val _howToShowSymbols = MutableLiveData<HowToShowSymbols>()
-    internal val howToShowSymbols: LiveData<HowToShowSymbols> get() = _howToShowSymbols
-
-    internal fun savePriceCurrencyUnit(priceCurrencyUnit: PriceCurrencyUnit) {
-        viewModelScope.launch {
-            settingRepository.savePriceCurrencyUnit(priceCurrencyUnit)
-        }
+    init {
+        loadSettings()
     }
 
-    internal fun saveLanguage(language: Language) {
-        viewModelScope.launch {
-            settingRepository.saveLanguage(language)
-        }
+    fun togglePriceCurrencyUnit(isChecked: Boolean) {
+        val unit = if (isChecked) PriceCurrencyUnit.WON else PriceCurrencyUnit.DEFAULT
+        savePriceCurrencyUnit(unit)
     }
 
-    internal fun saveHowToShowSymbols(howToShowSymbols: HowToShowSymbols) {
-        viewModelScope.launch {
-            settingRepository.saveHowToShowSymbols(howToShowSymbols)
-        }
+    fun toggleLanguage(isChecked: Boolean) {
+        val language = if (isChecked) Language.KOREAN else Language.DEFAULT
+        saveLanguage(language)
     }
 
-    internal fun getPriceCurrencyUnit() {
+    fun toggleHowToShowSymbols(isChecked: Boolean) {
+        val setting = if (isChecked) HowToShowSymbols.GRID2X2 else HowToShowSymbols.DEFAULT
+        saveHowToShowSymbols(setting)
+    }
+
+    private fun loadSettings() {
         viewModelScope.launch {
-            settingRepository.getPriceCurrencyUnit().collect { selectType ->
-                _priceCurrencyUnit.value = selectType
+            launch {
+                settingRepository.getPriceCurrencyUnit().collect { unit ->
+                    _isPriceCurrencyWon.value = (unit == PriceCurrencyUnit.WON)
+                }
+            }
+
+            launch {
+                settingRepository.getLanguage().collect { language ->
+                    _isLanguageKorean.value = (language == Language.KOREAN)
+                }
+            }
+
+            settingRepository.getHowToShowSymbols().collect { symbolSetting ->
+                _isSymbolGrid.value = (symbolSetting == HowToShowSymbols.GRID2X2)
             }
         }
     }
 
-    internal fun getLanguage() {
-        viewModelScope.launch {
-            settingRepository.getLanguage().collect { selectType ->
-                _language.value = selectType
-            }
-        }
+    private fun savePriceCurrencyUnit(unit: PriceCurrencyUnit) = viewModelScope.launch {
+        settingRepository.savePriceCurrencyUnit(unit)
     }
 
-    fun getHowToShowSymbols() {
-        viewModelScope.launch {
-            settingRepository.getHowToShowSymbols().collect { selectType ->
-                _howToShowSymbols.value = selectType
-            }
-        }
+    private fun saveLanguage(language: Language) = viewModelScope.launch {
+        settingRepository.saveLanguage(language)
+    }
+
+    private fun saveHowToShowSymbols(setting: HowToShowSymbols) = viewModelScope.launch {
+        settingRepository.saveHowToShowSymbols(setting)
     }
 }
