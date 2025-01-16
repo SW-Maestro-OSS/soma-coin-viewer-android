@@ -168,10 +168,12 @@ private fun HeaderItem(
     updateSortType: (ListSortType, ListSortType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val sortImage = when (listSortType) {
-        currentAscType -> R.drawable.ic_up
-        currentDescType -> R.drawable.ic_down
-        else -> R.drawable.ic_updown
+    val sortImage = remember(listSortType) {
+        when (listSortType) {
+            currentAscType -> R.drawable.ic_up
+            currentDescType -> R.drawable.ic_down
+            else -> R.drawable.ic_updown
+        }
     }
 
     Row(
