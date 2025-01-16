@@ -23,9 +23,9 @@ class HomeViewModel @Inject constructor(
     internal val navigationHelper: NavigationHelper,
 ) : BaseViewModel() {
     private val _listSortType = MutableStateFlow(ListSortType.TOTAL_TRADE)
-    val listSortType = _listSortType.asStateFlow()
+    internal val listSortType = _listSortType.asStateFlow()
 
-    val coinData = coinInfoRepository.sortedCoinInfoData
+    internal val coinData = coinInfoRepository.sortedCoinInfoData
         .onEach { delay(200L) }
         .map { list ->
             when (_listSortType.value) {
@@ -44,7 +44,7 @@ class HomeViewModel @Inject constructor(
             initialValue = emptyList(),
         )
 
-    val howToShowSymbols = settingRepository.getHowToShowSymbols()
+    internal val howToShowSymbols = settingRepository.getHowToShowSymbols()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
