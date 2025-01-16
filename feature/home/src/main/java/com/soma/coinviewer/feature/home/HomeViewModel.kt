@@ -2,7 +2,9 @@ package com.soma.coinviewer.feature.home
 
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
+import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.domain.repository.CoinInfoRepository
+import com.soma.coinviewer.domain.repository.SettingRepository
 import com.soma.coinviewer.navigation.NavigationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -17,12 +19,13 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val coinInfoRepository: CoinInfoRepository,
+    private val settingRepository: SettingRepository,
     internal val navigationHelper: NavigationHelper,
 ) : BaseViewModel() {
     private val _listSortType = MutableStateFlow(ListSortType.TOTAL_TRADE)
-    val listSortType = _listSortType.asStateFlow()
+    internal val listSortType = _listSortType.asStateFlow()
 
-    val coinData = coinInfoRepository.sortedCoinInfoData
+    internal val coinData = coinInfoRepository.sortedCoinInfoData
         .onEach { delay(200L) }
         .map { list ->
             when (_listSortType.value) {
@@ -39,6 +42,13 @@ class HomeViewModel @Inject constructor(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList(),
+        )
+
+    internal val howToShowSymbols = settingRepository.getHowToShowSymbols()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = HowToShowSymbols.DEFAULT,
         )
 
     internal fun updateSortType(asc: ListSortType, desc: ListSortType) {
