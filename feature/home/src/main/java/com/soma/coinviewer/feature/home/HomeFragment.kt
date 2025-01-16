@@ -16,11 +16,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -119,7 +122,16 @@ private fun HomeScreen(
 
             when (howToShowSymbols.value) {
                 HowToShowSymbols.LINEAR.value -> {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    val listState = rememberLazyListState()
+
+                    LaunchedEffect(listSortType) {
+                        listState.scrollToItem(0)
+                    }
+
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
                         itemsIndexed(
                             items = coinData,
                             key = { _, data -> data.symbol },
@@ -137,7 +149,14 @@ private fun HomeScreen(
                 }
 
                 HowToShowSymbols.GRID2X2.value -> {
+                    val listState = rememberLazyGridState()
+
+                    LaunchedEffect(listSortType) {
+                        listState.scrollToItem(0)
+                    }
+
                     LazyVerticalGrid(
+                        state = listState,
                         columns = GridCells.Fixed(2),
                         modifier = Modifier.fillMaxSize(),
                     ) {

@@ -5,9 +5,9 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.soma.coinviewer.common_ui.base.BaseBindingFragment
-import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
-import com.soma.coinviewer.domain.preferences.Language
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
+import com.soma.coinviewer.domain.preferences.Language
+import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
 import com.soma.coinviewer.feature.setting.databinding.FragmentSettingBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,59 +19,9 @@ class SettingFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeSelectType()
-
-        fragmentViewModel.getPriceCurrencyUnit()
-        fragmentViewModel.getLanguage()
-        fragmentViewModel.getHowToShowSymbols()
-
-        binding.switchPriceCurrency.setOnCheckedChangeListener { _, isChecked ->
-            val selectPriceCurrencyUnit = if (isChecked) {
-                PriceCurrencyUnit.WON
-            } else {
-                PriceCurrencyUnit.DEFAULT
-            }
-
-            fragmentViewModel.savePriceCurrencyUnit(selectPriceCurrencyUnit)
-        }
-
-        binding.switchLanguage.setOnCheckedChangeListener { _, isChecked ->
-            val selectLanguage = if (isChecked) {
-                Language.KOREAN
-            } else {
-                Language.DEFAULT
-            }
-
-            fragmentViewModel.saveLanguage(selectLanguage)
-        }
-
-        binding.switchShowSymbolGrid.setOnCheckedChangeListener { _, isChecked ->
-            val selectHowToShowSymbols = if (isChecked) {
-                HowToShowSymbols.GRID2X2
-            } else {
-                HowToShowSymbols.DEFAULT
-            }
-
-            fragmentViewModel.saveHowToShowSymbols(selectHowToShowSymbols)
-        }
-    }
-
-    private fun observeSelectType() {
-        fragmentViewModel.apply {
-            priceCurrencyUnit.observe(viewLifecycleOwner, Observer { priceCurrencyUnit ->
-                binding.switchPriceCurrency.isChecked =
-                    (priceCurrencyUnit.currencyCode != PriceCurrencyUnit.DEFAULT.currencyCode)
-            })
-
-            language.observe(viewLifecycleOwner, Observer { language ->
-                binding.switchLanguage.isChecked =
-                    (language.value != Language.DEFAULT.value)
-            })
-
-            howToShowSymbols.observe(viewLifecycleOwner, Observer { howToShowSymbols ->
-                binding.switchShowSymbolGrid.isChecked =
-                    (howToShowSymbols.value != HowToShowSymbols.DEFAULT.value)
-            })
+        binding.apply {
+            viewModel = fragmentViewModel
+            lifecycleOwner = viewLifecycleOwner
         }
     }
 }
