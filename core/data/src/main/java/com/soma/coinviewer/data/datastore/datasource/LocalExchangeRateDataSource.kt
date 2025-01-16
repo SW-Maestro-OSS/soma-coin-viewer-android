@@ -53,6 +53,6 @@ class LocalExchangeRateDataSource @Inject constructor(
     }
 
     companion object {
-        private const val EXCHANGE_RATE_PREFERENCE_KEY = "exchange_rate_"
+        private const val EXCHANGE_RATE_PREFERENCE_KEY = "exchange_rate"
     }
 }

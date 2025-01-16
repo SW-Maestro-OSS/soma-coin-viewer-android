@@ -13,12 +13,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.soma.coinviewer.common_ui.base.BaseComposeFragment
 import com.soma.coinviewer.domain.model.CoinInfoData
+import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.navigation.DeepLinkRoute
 import com.soma.coinviewer.navigation.NavigationTarget
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,8 +51,10 @@ class HomeFragment : BaseComposeFragment() {
         fragmentViewModel.apply {
             val listSortType by listSortType.collectAsStateWithLifecycle()
             val coinData by coinData.collectAsStateWithLifecycle()
+            val howToShowSymbols by howToShowSymbols.collectAsStateWithLifecycle()
 
             HomeScreen(
+                howToShowSymbols = howToShowSymbols,
                 listSortType = listSortType,
                 coinData = coinData,
                 updateSortType = ::updateSortType,
@@ -61,6 +68,7 @@ class HomeFragment : BaseComposeFragment() {
 
 @Composable
 private fun HomeScreen(
+    howToShowSymbols: HowToShowSymbols,
     listSortType: ListSortType,
     coinData: List<CoinInfoData>,
     updateSortType: (ListSortType, ListSortType) -> Unit,
@@ -108,18 +116,43 @@ private fun HomeScreen(
                 )
             }
 
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                itemsIndexed(
-                    items = coinData,
-                    key = { _, data -> data.symbol },
-                ) { idx, data ->
-                    CoinItem(
-                        coinData = data,
-                        navigateToCoinDetail = navigateToCoinDetail,
-                    )
+            when (howToShowSymbols.value) {
+                HowToShowSymbols.LINEAR.value -> {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        itemsIndexed(
+                            items = coinData,
+                            key = { _, data -> data.symbol },
+                        ) { idx, data ->
+                            CoinRow(
+                                coinData = data,
+                                navigateToCoinDetail = navigateToCoinDetail,
+                            )
 
-                    if (idx != coinData.lastIndex) {
-                        HorizontalDivider(color = Color.DarkGray)
+                            if (idx != coinData.lastIndex) {
+                                HorizontalDivider(color = Color.DarkGray)
+                            }
+                        }
+                    }
+                }
+
+                HowToShowSymbols.GRID2X2.value -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        itemsIndexed(
+                            items = coinData,
+                            key = { _, data -> data.symbol },
+                        ) { idx, data ->
+                            CoinRow(
+                                coinData = data,
+                                navigateToCoinDetail = navigateToCoinDetail,
+                            )
+
+                            if (idx != coinData.lastIndex) {
+                                HorizontalDivider(color = Color.DarkGray)
+                            }
+                        }
                     }
                 }
             }
@@ -161,7 +194,7 @@ private fun HeaderItem(
 }
 
 @Composable
-private fun CoinItem(
+private fun CoinRow(
     coinData: CoinInfoData,
     navigateToCoinDetail: (String) -> Unit,
 ) {
@@ -197,12 +230,13 @@ private fun CoinItem(
             modifier = Modifier.weight(1f),
         )
 
-        val (priceChangePercentText, priceChangePercentColor) =
+        val (priceChangePercentText, priceChangePercentColor) = remember(coinData.priceChangePercent) {
             if (coinData.priceChangePercent >= BigDecimal(0.0)) {
                 "+" + coinData.priceChangePercent.toString() to Color.Green
             } else {
                 coinData.priceChangePercent.toString() to Color.Red
             }
+        }
 
         Text(
             text = priceChangePercentText,
@@ -211,5 +245,64 @@ private fun CoinItem(
             color = priceChangePercentColor,
             modifier = Modifier.weight(1f),
         )
+    }
+}
+
+@Composable
+private fun CoinGridCard(
+    coinData: CoinInfoData,
+    navigateToCoinDetail: (String) -> Unit,
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { navigateToCoinDetail(coinData.symbol) }
+            .padding(horizontal = 4.dp),
+    ) {
+        AsyncImage(
+            model = coinData.coinIconUrl,
+            placeholder = painterResource(com.soma.coinviewer.common_ui.R.drawable.ic_coin_placeholder),
+            error = painterResource(com.soma.coinviewer.common_ui.R.drawable.ic_coin_placeholder),
+            onError = { Log.w("Img Error", coinData.coinIconUrl) },
+            contentDescription = "",
+            modifier = Modifier.size(40.dp),
+        )
+
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = coinData.symbol,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Start,
+                modifier = Modifier.weight(1f),
+            )
+
+            Text(
+                text = coinData.price.toPlainString(),
+                fontSize = 20.sp,
+                textAlign = TextAlign.End,
+                modifier = Modifier.weight(1f),
+            )
+
+            val (priceChangePercentText, priceChangePercentColor) = remember(coinData.priceChangePercent) {
+                if (coinData.priceChangePercent >= BigDecimal(0.0)) {
+                    "+" + coinData.priceChangePercent.toString() to Color.Green
+                } else {
+                    coinData.priceChangePercent.toString() to Color.Red
+                }
+            }
+
+            Text(
+                text = priceChangePercentText,
+                fontSize = 20.sp,
+                textAlign = TextAlign.End,
+                color = priceChangePercentColor,
+                modifier = Modifier.weight(1f),
+            )
+        }
     }
 }
