@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
@@ -140,18 +141,16 @@ private fun HomeScreen(
                         columns = GridCells.Fixed(2),
                         modifier = Modifier.fillMaxSize(),
                     ) {
-                        itemsIndexed(
+                        items(
                             items = coinData,
-                            key = { _, data -> data.symbol },
-                        ) { idx, data ->
-                            CoinRow(
+                            key = { data -> data.symbol },
+                        ) { data ->
+                            CoinGridCard(
                                 coinData = data,
                                 navigateToCoinDetail = navigateToCoinDetail,
                             )
 
-                            if (idx != coinData.lastIndex) {
-                                HorizontalDivider(color = Color.DarkGray)
-                            }
+                            HorizontalDivider(color = Color.DarkGray)
                         }
                     }
                 }
@@ -239,7 +238,7 @@ private fun CoinRow(
         }
 
         Text(
-            text = priceChangePercentText,
+            text = "$priceChangePercentText %",
             fontSize = 13.sp,
             textAlign = TextAlign.End,
             color = priceChangePercentColor,
@@ -258,7 +257,7 @@ private fun CoinGridCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { navigateToCoinDetail(coinData.symbol) }
-            .padding(horizontal = 4.dp),
+            .padding(horizontal = 4.dp, vertical = 10.dp),
     ) {
         AsyncImage(
             model = coinData.coinIconUrl,
@@ -266,26 +265,24 @@ private fun CoinGridCard(
             error = painterResource(com.soma.coinviewer.common_ui.R.drawable.ic_coin_placeholder),
             onError = { Log.w("Img Error", coinData.coinIconUrl) },
             contentDescription = "",
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier
+                .size(60.dp)
         )
 
         Column(
             horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.weight(1f)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier
+                .weight(1f)
         ) {
             Text(
                 text = coinData.symbol,
-                fontSize = 20.sp,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.weight(1f),
+                fontSize = 18.sp,
             )
 
             Text(
                 text = coinData.price.toPlainString(),
-                fontSize = 20.sp,
-                textAlign = TextAlign.End,
-                modifier = Modifier.weight(1f),
+                fontSize = 18.sp,
             )
 
             val (priceChangePercentText, priceChangePercentColor) = remember(coinData.priceChangePercent) {
@@ -297,12 +294,102 @@ private fun CoinGridCard(
             }
 
             Text(
-                text = priceChangePercentText,
-                fontSize = 20.sp,
-                textAlign = TextAlign.End,
+                text = "$priceChangePercentText %",
+                fontSize = 18.sp,
                 color = priceChangePercentColor,
-                modifier = Modifier.weight(1f),
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewHomeScreenLinear() {
+    val dummyCoinData = listOf(
+        CoinInfoData(
+            symbol = "BTC",
+            totalTradedQuoteAssetVolume = BigDecimal("1000000"),
+            price = BigDecimal("40000.5"),
+            priceChangePercent = BigDecimal("2.5"),
+            coinIconUrl = "https://cryptologos.cc/logos/bitcoin-btc-logo.png"
+        ),
+        CoinInfoData(
+            symbol = "ETH",
+            totalTradedQuoteAssetVolume = BigDecimal("500000"),
+            price = BigDecimal("2500.75"),
+            priceChangePercent = BigDecimal("-1.2"),
+            coinIconUrl = "https://cryptologos.cc/logos/ethereum-eth-logo.png"
+        )
+    )
+
+    HomeScreen(
+        howToShowSymbols = HowToShowSymbols.LINEAR,
+        listSortType = ListSortType.TOTAL_TRADE,
+        coinData = dummyCoinData,
+        updateSortType = { _, _ -> },
+        navigateToCoinDetail = {}
+    )
+}
+
+@Preview
+@Composable
+private fun PreviewHomeScreenGrid() {
+    val dummyCoinData = listOf(
+        CoinInfoData(
+            symbol = "BTC",
+            totalTradedQuoteAssetVolume = BigDecimal("1000000"),
+            price = BigDecimal("40000.5"),
+            priceChangePercent = BigDecimal("2.5"),
+            coinIconUrl = "https://cryptologos.cc/logos/bitcoin-btc-logo.png"
+        ),
+        CoinInfoData(
+            symbol = "ETH",
+            totalTradedQuoteAssetVolume = BigDecimal("500000"),
+            price = BigDecimal("2500.75"),
+            priceChangePercent = BigDecimal("-1.2"),
+            coinIconUrl = "https://cryptologos.cc/logos/ethereum-eth-logo.png"
+        )
+    )
+
+    HomeScreen(
+        howToShowSymbols = HowToShowSymbols.GRID2X2,
+        listSortType = ListSortType.TOTAL_TRADE,
+        coinData = dummyCoinData,
+        updateSortType = { _, _ -> },
+        navigateToCoinDetail = {}
+    )
+}
+
+@Preview
+@Composable
+private fun PreviewCoinRow() {
+    val dummyCoinData = CoinInfoData(
+        symbol = "BTC",
+        totalTradedQuoteAssetVolume = BigDecimal("1000000"),
+        price = BigDecimal("40000.5"),
+        priceChangePercent = BigDecimal("2.5"),
+        coinIconUrl = "https://cryptologos.cc/logos/bitcoin-btc-logo.png"
+    )
+
+    CoinRow(
+        coinData = dummyCoinData,
+        navigateToCoinDetail = {}
+    )
+}
+
+@Preview
+@Composable
+private fun PreviewCoinGridCard() {
+    val dummyCoinData = CoinInfoData(
+        symbol = "BTC",
+        totalTradedQuoteAssetVolume = BigDecimal("1000000"),
+        price = BigDecimal("40000.5"),
+        priceChangePercent = BigDecimal("2.5"),
+        coinIconUrl = "https://cryptologos.cc/logos/bitcoin-btc-logo.png"
+    )
+
+    CoinGridCard(
+        coinData = dummyCoinData,
+        navigateToCoinDetail = {}
+    )
 }
