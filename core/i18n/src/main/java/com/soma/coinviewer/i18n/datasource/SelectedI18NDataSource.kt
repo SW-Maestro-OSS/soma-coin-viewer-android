@@ -50,15 +50,7 @@ class SelectedI18NDataSource @Inject constructor(
                         ?: throw NullPointerException("currency.postUnit이 유효하지 않습니다.")
                 )
             )
-        } ?: SelectedRegion(
-            locale = Locale.KOREA,
-            timezoneId = "Asia/Seoul",
-            language = Locale.KOREAN,
-            currency = Currency(
-                prefixSign = "₩",
-                postUnit = "KRW"
-            )
-        )
+        } ?: throw NullPointerException("SelectedRegion 데이터를 찾을 수 없습니다.")
     }.first()
 
     private companion object {

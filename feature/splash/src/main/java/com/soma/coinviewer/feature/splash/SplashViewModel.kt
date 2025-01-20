@@ -13,7 +13,6 @@ import com.soma.coinviewer.navigation.NavigationHelper
 import com.soma.coinviewer.navigation.NavigationTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -32,14 +31,10 @@ class SplashViewModel @Inject constructor(
             val exchangeRateJob = getExchangeRate()
             val regionInitJob = initializeRegion()
 
-            // 최소 2초 대기
             delay(2000L)
+            exchangeRateJob.join()
+            regionInitJob.join()
 
-            // 작업 완료 또는 취소 대기
-            exchangeRateJob.cancelAndJoin()
-            regionInitJob.cancelAndJoin()
-
-            // 홈 화면으로 이동
             navigationHelper.navigateTo(
                 NavigationTarget(
                     destination = DeepLinkRoute.Home,
@@ -54,9 +49,11 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun initializeRegion() = viewModelScope.launch(exceptionHandler) {
-        val selectedRegion = getCurrentRegion()
-        Log.d("test", selectedRegion.toString())
+        val selectedRegion = runCatching {
+            selectedI18NDataSource.getRegion()
+        }.getOrDefault(getCurrentRegion())
 
+        Log.d("test", selectedRegion.toString())
         selectedI18NDataSource.saveRegion(selectedRegion)
     }
 
