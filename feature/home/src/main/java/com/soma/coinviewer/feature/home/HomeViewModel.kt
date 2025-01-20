@@ -51,7 +51,7 @@ class HomeViewModel @Inject constructor(
             initialValue = HowToShowSymbols.DEFAULT,
         )
 
-    internal fun updateSortType(asc: ListSortType, desc: ListSortType) {
+    internal fun ㅌupdateSortType(asc: ListSortType, desc: ListSortType) {
         val currentSortType = _listSortType.value
 
         _listSortType.value = when (currentSortType) {

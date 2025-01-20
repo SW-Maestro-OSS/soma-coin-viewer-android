@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -8,23 +6,14 @@ plugins {
 }
 
 android {
-    namespace = "com.soma.coinviewer.data"
+    namespace = "com.soma.coinviewer.i18n"
     compileSdk = libs.versions.compileSdk.get().toInt()
-
-    val properties = Properties()
-    properties.load(project.rootProject.file("local.properties").bufferedReader())
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
-        buildConfigField(
-            type = "String",
-            name = "OPEN_API_KEY",
-            value = "\"${properties["OPEN_API_KEY"]}\"",
-        )
     }
 
     buildTypes {
@@ -36,7 +25,6 @@ android {
             )
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -45,29 +33,15 @@ android {
     kotlinOptions {
         jvmTarget = libs.versions.jvmTarget.get()
     }
-
-    buildFeatures {
-        buildConfig = true
-    }
 }
 
 dependencies {
-    implementation(project(":core:domain"))
-
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    // Network
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.gson.converter)
-    implementation(libs.okhttp.core)
-    implementation(libs.okhttp.logging)
-    implementation(libs.gson)
-
     implementation(libs.androidx.datastore)
 
-    // Test
     testImplementation(libs.junit4)
     androidTestImplementation(libs.androidx.junit)
 }
