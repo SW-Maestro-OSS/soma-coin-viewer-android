@@ -1,8 +1,13 @@
 package com.soma.coinviewer.feature.splash
 
+import android.icu.util.TimeZone
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
+import com.soma.coinviewer.i18n.Currency
+import com.soma.coinviewer.i18n.SelectedRegion
+import com.soma.coinviewer.i18n.datasource.SelectedI18NDataSource
 import com.soma.coinviewer.navigation.DeepLinkRoute
 import com.soma.coinviewer.navigation.NavigationHelper
 import com.soma.coinviewer.navigation.NavigationTarget
@@ -11,11 +16,13 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val exchangeRateRepository: ExchangeRateRepository,
+    private val selectedI18NDataSource: SelectedI18NDataSource,
     private val exceptionHandler: CoroutineExceptionHandler,
     private val navigationHelper: NavigationHelper,
 ) : BaseViewModel() {
@@ -23,9 +30,16 @@ class SplashViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val exchangeRateJob = getExchangeRate()
-            delay(2000L) // 최소 2초는 기다립니다.
-            exchangeRateJob.cancelAndJoin()
+            val regionInitJob = initializeRegion()
 
+            // 최소 2초 대기
+            delay(2000L)
+
+            // 작업 완료 또는 취소 대기
+            exchangeRateJob.cancelAndJoin()
+            regionInitJob.cancelAndJoin()
+
+            // 홈 화면으로 이동
             navigationHelper.navigateTo(
                 NavigationTarget(
                     destination = DeepLinkRoute.Home,
@@ -37,5 +51,33 @@ class SplashViewModel @Inject constructor(
 
     private fun getExchangeRate() = viewModelScope.launch(exceptionHandler) {
         exchangeRateRepository.updateExchangeRate()
+    }
+
+    private fun initializeRegion() = viewModelScope.launch(exceptionHandler) {
+        val selectedRegion = getCurrentRegion()
+        Log.d("test", selectedRegion.toString())
+
+        selectedI18NDataSource.saveRegion(selectedRegion)
+    }
+
+    private fun getCurrentRegion(): SelectedRegion {
+        val currentLocale = Locale.getDefault()
+        val currentTimeZone = TimeZone.getDefault()
+        val defaultCurrency = getCurrencyForLocale(currentLocale)
+
+        return SelectedRegion(
+            locale = currentLocale,
+            timezoneId = currentTimeZone.id,
+            language = currentLocale,
+            currency = defaultCurrency
+        )
+    }
+
+    private fun getCurrencyForLocale(locale: Locale): Currency {
+        return when (locale.country) {
+            "KR" -> Currency(prefixSign = "₩", postUnit = "KRW")
+            "US" -> Currency(prefixSign = "$", postUnit = "USD")
+            else -> Currency(prefixSign = "₩", postUnit = "KRW")
+        }
     }
 }
