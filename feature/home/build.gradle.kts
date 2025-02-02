@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":core:common-ui"))
     implementation(project(":core:domain"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:i18n"))
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

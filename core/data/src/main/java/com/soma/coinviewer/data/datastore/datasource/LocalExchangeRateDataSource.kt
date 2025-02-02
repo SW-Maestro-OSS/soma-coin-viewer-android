@@ -5,8 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.soma.coinviewer.data.datastore.util.getPreference
 import com.soma.coinviewer.data.datastore.util.savePreference
-import com.soma.coinviewer.domain.model.ExchangeRate
-import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
+import com.soma.coinviewer.domain.model.exchangerate.ExchangeRate
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -16,14 +15,14 @@ class LocalExchangeRateDataSource @Inject constructor(
 ) {
     suspend fun setExchangeRate(exchangeRate: ExchangeRate) {
         dataStore.savePreference(
-            stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + exchangeRate.priceCurrencyUnit.currencyCode),
+            stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + exchangeRate.currencyCode),
             exchangeRate,
         ) { it.toString() }
     }
 
-    fun getExchangeRate(currencyUnit: PriceCurrencyUnit): Flow<ExchangeRate> {
+    fun getExchangeRate(currencyCode: String): Flow<ExchangeRate> {
         return dataStore.getPreference(
-            stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + currencyUnit.currencyCode)
+            stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + currencyCode)
         ) { data ->
             data?.let {
                 val properties = it
@@ -35,10 +34,8 @@ class LocalExchangeRateDataSource @Inject constructor(
                     }
 
                 ExchangeRate(
-                    priceCurrencyUnit = PriceCurrencyUnit.fromValue(
-                        properties["currencyCode"]
-                            ?: throw NullPointerException("currencyCode가 유효하지 않습니다.")
-                    ),
+                    currencyCode = properties["currencyCode"]
+                        ?: throw NullPointerException("currencyCode가 유효하지 않습니다."),
                     receiveRateInWon = BigDecimal(
                         properties["receiveRateInWon"]
                             ?: throw NullPointerException("receiveRateInWon가 유효하지 않습니다.")

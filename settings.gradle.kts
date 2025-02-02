@@ -21,13 +21,17 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "CoinViewer"
+
 include(":app")
+
+include(":presentation")
+include(":feature:splash")
+include(":feature:home")
+include(":feature:coin-detail")
+include(":feature:setting")
+
 include(":core:domain")
 include(":core:data")
 include(":core:common-ui")
-include(":presentation")
-include(":feature:home")
-include(":feature:splash")
-include(":feature:setting")
 include(":core:navigation")
-include(":feature:coin-detail")
+include(":core:i18n")

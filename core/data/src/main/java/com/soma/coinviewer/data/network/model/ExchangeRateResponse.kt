@@ -1,8 +1,7 @@
 package com.soma.coinviewer.data.network.model
 
 import com.google.gson.annotations.SerializedName
-import com.soma.coinviewer.domain.model.ExchangeRate
-import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
+import com.soma.coinviewer.domain.model.exchangerate.ExchangeRate
 import java.math.BigDecimal
 
 /**
@@ -37,7 +36,7 @@ data class ExchangeRateResponse(
     @SerializedName("kftc_bkpr") val seoulFxBookValueRate: String,
 ) {
     fun toVO() = ExchangeRate(
-        priceCurrencyUnit = PriceCurrencyUnit.fromValue(currencyCode),
+        currencyCode = currencyCode,
         sendRateToForeignCurrency = BigDecimal(sendRateToForeignCurrency.replace(",", "")),
         receiveRateInWon = BigDecimal(receiveRateInWon.replace(",", "")),
     )

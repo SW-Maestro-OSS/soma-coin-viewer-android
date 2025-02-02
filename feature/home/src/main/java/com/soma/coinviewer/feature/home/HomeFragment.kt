@@ -39,7 +39,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.soma.coinviewer.common_ui.base.BaseComposeFragment
-import com.soma.coinviewer.domain.model.CoinInfoData
+import com.soma.coinviewer.domain.model.coin.CoinInfoData
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.navigation.DeepLinkRoute
 import com.soma.coinviewer.navigation.NavigationTarget
@@ -54,13 +54,25 @@ class HomeFragment : BaseComposeFragment() {
     override fun ComposeLayout() {
         fragmentViewModel.apply {
             val listSortType by listSortType.collectAsStateWithLifecycle()
-            val coinData by coinData.collectAsStateWithLifecycle()
+            val currentData by when (listSortType) {
+                ListSortType.TOTAL_TRADE -> totalTradeData
+                ListSortType.SYMBOL_ASC -> symbolAscData
+                ListSortType.SYMBOL_DESC -> symbolDescData
+                ListSortType.PRICE_ASC -> priceAscData
+                ListSortType.PRICE_DESC -> priceDescData
+                ListSortType.ONE_DAY_CHANGE_ASC -> priceChangeAscData
+                ListSortType.ONE_DAY_CHANGE_DESC -> priceChangeDescData
+            }.collectAsStateWithLifecycle()
             val howToShowSymbols by howToShowSymbols.collectAsStateWithLifecycle()
+
+            LaunchedEffect(Unit) {
+                loadHowToShowSymbols()
+            }
 
             HomeScreen(
                 howToShowSymbols = howToShowSymbols,
                 listSortType = listSortType,
-                coinData = coinData,
+                coinData = currentData,
                 updateSortType = ::updateSortType,
                 navigateToCoinDetail = { coinId ->
                     navigationHelper.navigateTo(NavigationTarget(DeepLinkRoute.CoinDetail(coinId)))

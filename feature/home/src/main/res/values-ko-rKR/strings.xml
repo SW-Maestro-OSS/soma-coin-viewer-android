@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="symbol">심볼</string>
+    <string name="price">가격</string>
+    <string name="change_24h">하루간 변화량 %</string>
+</resources>

@@ -42,6 +42,7 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:common-ui"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:i18n"))
 
     implementation(libs.hilt.android)
     implementation(libs.androidx.lifecycle.viewModel)

@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:checked="@{viewModel.isPriceCurrencyWon}"
-                android:onCheckedChanged="@{(button, isChecked) -> viewModel.togglePriceCurrencyUnit(isChecked)}" />
+                android:onCheckedChanged="@{(button, isChecked) -> viewModel.toggleCurrency(isChecked)}" />
         </LinearLayout>
 
         <!-- Language Switch -->

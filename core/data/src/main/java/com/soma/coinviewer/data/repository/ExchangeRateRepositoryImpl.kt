@@ -2,8 +2,7 @@ package com.soma.coinviewer.data.repository
 
 import com.soma.coinviewer.data.datastore.datasource.LocalExchangeRateDataSource
 import com.soma.coinviewer.data.network.datasource.RemoteExchangeRateDataSource
-import com.soma.coinviewer.domain.model.ExchangeRate
-import com.soma.coinviewer.domain.preferences.PriceCurrencyUnit
+import com.soma.coinviewer.domain.model.exchangerate.ExchangeRate
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
 import kotlinx.coroutines.flow.last
 import java.time.LocalDate
@@ -28,19 +27,17 @@ class ExchangeRateRepositoryImpl @Inject constructor(
 
         if (result.isNotEmpty()) {
             result.map { it.toVO() }
-                .filter { it.priceCurrencyUnit != PriceCurrencyUnit.DEFAULT }
                 .onEach { localExchangeRateDataSource.setExchangeRate(it) }
             return
         }
 
         remoteExchangeRateDataSource.getExchangeRate(today.minusDays(1))
             .map { it.toVO() }
-            .filter { it.priceCurrencyUnit != PriceCurrencyUnit.DEFAULT }
             .onEach { localExchangeRateDataSource.setExchangeRate(it) }
     }
 
-    override suspend fun getExchangeRate(priceCurrencyUnit: PriceCurrencyUnit): ExchangeRate {
-        return localExchangeRateDataSource.getExchangeRate(priceCurrencyUnit).last()
+    override suspend fun getExchangeRate(currencyCode: String): ExchangeRate {
+        return localExchangeRateDataSource.getExchangeRate(currencyCode).last()
     }
 
     companion object {

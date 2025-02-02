@@ -18,6 +18,7 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
 
         buildConfigField(
             type = "String",
@@ -52,10 +53,7 @@ android {
 
 dependencies {
     implementation(project(":core:domain"))
-
-    // Test
-    testImplementation(libs.junit4)
-    androidTestImplementation(libs.androidx.junit)
+    implementation(project(":core:i18n"))
 
     // Hilt
     implementation(libs.hilt.android)
@@ -70,6 +68,7 @@ dependencies {
 
     implementation(libs.androidx.datastore)
 
+    // Test
     testImplementation(libs.junit4)
     androidTestImplementation(libs.androidx.junit)
 }

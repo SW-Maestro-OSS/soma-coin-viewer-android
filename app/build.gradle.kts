@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":presentation"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
+    implementation(project(":core:i18n"))
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
