@@ -57,6 +57,10 @@ class HomeFragment : BaseComposeFragment() {
             val coinData by coinData.collectAsStateWithLifecycle()
             val howToShowSymbols by howToShowSymbols.collectAsStateWithLifecycle()
 
+            LaunchedEffect(Unit) {
+                loadHowToShowSymbols()
+            }
+
             HomeScreen(
                 howToShowSymbols = howToShowSymbols,
                 listSortType = listSortType,

@@ -53,6 +53,7 @@ android {
 
 dependencies {
     implementation(project(":core:domain"))
+    implementation(project(":core:i18n"))
 
     // Hilt
     implementation(libs.hilt.android)

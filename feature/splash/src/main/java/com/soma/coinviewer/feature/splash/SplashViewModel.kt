@@ -1,13 +1,14 @@
 package com.soma.coinviewer.feature.splash
 
 import android.icu.util.TimeZone
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
 import com.soma.coinviewer.i18n.Currency
+import com.soma.coinviewer.i18n.I18NHelper
 import com.soma.coinviewer.i18n.SelectedRegion
-import com.soma.coinviewer.i18n.datasource.SelectedI18NDataSource
+import com.soma.coinviewer.i18n.USDCurrency
+import com.soma.coinviewer.i18n.koreanCurrency
 import com.soma.coinviewer.navigation.DeepLinkRoute
 import com.soma.coinviewer.navigation.NavigationHelper
 import com.soma.coinviewer.navigation.NavigationTarget
@@ -21,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val exchangeRateRepository: ExchangeRateRepository,
-    private val selectedI18NDataSource: SelectedI18NDataSource,
+    private val i18NHelper: I18NHelper,
     private val exceptionHandler: CoroutineExceptionHandler,
     private val navigationHelper: NavigationHelper,
 ) : BaseViewModel() {
@@ -50,11 +51,10 @@ class SplashViewModel @Inject constructor(
 
     private fun initializeRegion() = viewModelScope.launch(exceptionHandler) {
         val selectedRegion = runCatching {
-            selectedI18NDataSource.getRegion()
+            i18NHelper.getRegion()
         }.getOrDefault(getCurrentRegion())
 
-        Log.d("test", selectedRegion.toString())
-        selectedI18NDataSource.saveRegion(selectedRegion)
+        i18NHelper.saveRegion(selectedRegion)
     }
 
     private fun getCurrentRegion(): SelectedRegion {
@@ -72,9 +72,8 @@ class SplashViewModel @Inject constructor(
 
     private fun getCurrencyForLocale(locale: Locale): Currency {
         return when (locale.country) {
-            "KR" -> Currency(prefixSign = "₩", postUnit = "KRW")
-            "US" -> Currency(prefixSign = "$", postUnit = "USD")
-            else -> Currency(prefixSign = "₩", postUnit = "KRW")
+            "KR" -> koreanCurrency
+            else -> USDCurrency
         }
     }
 }

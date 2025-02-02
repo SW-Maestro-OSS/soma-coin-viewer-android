@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,12 +45,12 @@ class HomeViewModel @Inject constructor(
             initialValue = emptyList(),
         )
 
-    internal val howToShowSymbols = settingRepository.getHowToShowSymbols()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = HowToShowSymbols.DEFAULT,
-        )
+    private val _howToShowSymbols = MutableStateFlow<HowToShowSymbols>(HowToShowSymbols.DEFAULT)
+    internal val howToShowSymbols = _howToShowSymbols.asStateFlow()
+
+    internal fun loadHowToShowSymbols() = viewModelScope.launch {
+        _howToShowSymbols.value = settingRepository.getHowToShowSymbols()
+    }
 
     internal fun updateSortType(asc: ListSortType, desc: ListSortType) {
         val currentSortType = _listSortType.value
