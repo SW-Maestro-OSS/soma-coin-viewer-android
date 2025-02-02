@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.soma.coinviewer.data.datastore.util.getPreference
 import com.soma.coinviewer.data.datastore.util.savePreference
-import com.soma.coinviewer.domain.model.ExchangeRate
+import com.soma.coinviewer.domain.model.exchangerate.ExchangeRate
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import javax.inject.Inject

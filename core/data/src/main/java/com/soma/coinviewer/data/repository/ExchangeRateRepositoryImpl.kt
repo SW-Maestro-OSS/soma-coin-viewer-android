@@ -2,7 +2,7 @@ package com.soma.coinviewer.data.repository
 
 import com.soma.coinviewer.data.datastore.datasource.LocalExchangeRateDataSource
 import com.soma.coinviewer.data.network.datasource.RemoteExchangeRateDataSource
-import com.soma.coinviewer.domain.model.ExchangeRate
+import com.soma.coinviewer.domain.model.exchangerate.ExchangeRate
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
 import kotlinx.coroutines.flow.last
 import java.time.LocalDate

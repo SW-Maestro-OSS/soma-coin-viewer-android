@@ -1,7 +1,7 @@
 package com.soma.coinviewer.data.network.model
 
 import com.google.gson.annotations.SerializedName
-import com.soma.coinviewer.domain.model.ExchangeRate
+import com.soma.coinviewer.domain.model.exchangerate.ExchangeRate
 import java.math.BigDecimal
 
 /**

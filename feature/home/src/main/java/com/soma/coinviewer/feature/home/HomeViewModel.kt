@@ -26,23 +26,84 @@ class HomeViewModel @Inject constructor(
     private val _listSortType = MutableStateFlow(ListSortType.TOTAL_TRADE)
     internal val listSortType = _listSortType.asStateFlow()
 
-    internal val coinData = coinInfoRepository.sortedCoinInfoData
+    private val baseCoinData = coinInfoRepository.coinInfoData
         .onEach { delay(200L) }
-        .map { list ->
-            when (_listSortType.value) {
-                ListSortType.TOTAL_TRADE -> list.sortedByDescending { it.totalTradedQuoteAssetVolume }
-                ListSortType.SYMBOL_ASC -> list.sortedBy { it.symbol }
-                ListSortType.SYMBOL_DESC -> list.sortedByDescending { it.symbol }
-                ListSortType.PRICE_ASC -> list.sortedBy { it.price }
-                ListSortType.PRICE_DESC -> list.sortedByDescending { it.price }
-                ListSortType.ONE_DAY_CHANGE_ASC -> list.sortedBy { it.priceChangePercent }
-                ListSortType.ONE_DAY_CHANGE_DESC -> list.sortedByDescending { it.priceChangePercent }
-            }
+        .map { data -> data.map { it.value }.toList() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )
+
+    internal val totalTradeData = baseCoinData
+        .map { coinInfos ->
+            coinInfos.sortedByDescending { it.totalTradedQuoteAssetVolume }
+                .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )
+
+    internal val symbolAscData = baseCoinData
+        .map { coinInfos ->
+            coinInfos.sortedBy { it.symbol }
+                .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )
+
+    internal val symbolDescData = baseCoinData
+        .map { coinInfos ->
+            coinInfos.sortedByDescending { it.symbol }
+                .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )
+
+    internal val priceAscData = baseCoinData
+        .map { coinInfos ->
+            coinInfos.sortedBy { it.price }
+                .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )
+
+    internal val priceDescData = baseCoinData
+        .map { coinInfos ->
+            coinInfos.sortedByDescending { it.price }
+                .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )
+
+    internal val priceChangeAscData = baseCoinData
+        .map { coinInfos ->
+            coinInfos.sortedBy { it.priceChangePercent }
+                .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )
+
+    internal val priceChangeDescData = baseCoinData
+        .map { coinInfos ->
+            coinInfos.sortedByDescending { it.priceChangePercent }
+                .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
-            initialValue = emptyList(),
+            initialValue = emptyList()
         )
 
     private val _howToShowSymbols = MutableStateFlow<HowToShowSymbols>(HowToShowSymbols.DEFAULT)
@@ -60,6 +121,10 @@ class HomeViewModel @Inject constructor(
             desc -> asc
             else -> asc
         }
+    }
+
+    companion object {
+        private const val COIN_INFO_TICKER_DATA_MAX_SIZE = 30
     }
 }
 
