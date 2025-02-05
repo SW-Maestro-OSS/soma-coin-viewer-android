@@ -7,6 +7,7 @@ import com.soma.coinviewer.domain.repository.CoinInfoRepository
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
 import com.soma.coinviewer.domain.repository.SettingRepository
 import com.soma.coinviewer.feature.home.ro.toRO
+import com.soma.coinviewer.i18n.Currency
 import com.soma.coinviewer.i18n.I18NHelper
 import com.soma.coinviewer.i18n.USDCurrency
 import com.soma.coinviewer.navigation.NavigationHelper
@@ -30,10 +31,7 @@ class HomeViewModel @Inject constructor(
     internal val navigationHelper: NavigationHelper,
     private val i18NHelper: I18NHelper,
 ) : BaseViewModel() {
-
-    private val _currency = MutableStateFlow(USDCurrency)
-    val currency = _currency.asStateFlow()
-
+    private var currency: Currency = USDCurrency
     private var exchangeRate: BigDecimal = BigDecimal.ONE
 
     private val _listSortType = MutableStateFlow(ListSortType.TOTAL_TRADE)
@@ -52,7 +50,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedByDescending { it.totalTradedQuoteAssetVolume }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
-                .map { it.toRO(currency.value, exchangeRate) }
+                .map { it.toRO(currency, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -63,7 +61,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedBy { it.symbol }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
-                .map { it.toRO(currency.value, exchangeRate) }
+                .map { it.toRO(currency, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -74,7 +72,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedByDescending { it.symbol }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
-                .map { it.toRO(currency.value, exchangeRate) }
+                .map { it.toRO(currency, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -85,7 +83,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedBy { it.price }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
-                .map { it.toRO(currency.value, exchangeRate) }
+                .map { it.toRO(currency, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -96,7 +94,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedByDescending { it.price }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
-                .map { it.toRO(currency.value, exchangeRate) }
+                .map { it.toRO(currency, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -107,7 +105,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedBy { it.priceChangePercent }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
-                .map { it.toRO(currency.value, exchangeRate) }
+                .map { it.toRO(currency, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -118,7 +116,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedByDescending { it.priceChangePercent }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
-                .map { it.toRO(currency.value, exchangeRate) }
+                .map { it.toRO(currency, exchangeRate) }
         }
         .stateIn(
             scope = viewModelScope,
@@ -130,8 +128,8 @@ class HomeViewModel @Inject constructor(
     internal val howToShowSymbols = _howToShowSymbols.asStateFlow()
 
     internal fun initExchangeRate() = viewModelScope.launch {
-        _currency.value = i18NHelper.getRegion().currency
-        exchangeRate = when (currency.value) {
+        currency = i18NHelper.getRegion().currency
+        exchangeRate = when (currency) {
             USDCurrency -> BigDecimal.ONE
             else -> exchangeRateRepository.getExchangeRate("USD")
         }

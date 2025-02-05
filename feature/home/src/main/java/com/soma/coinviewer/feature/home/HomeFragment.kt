@@ -43,8 +43,6 @@ import coil.compose.AsyncImage
 import com.soma.coinviewer.common_ui.base.BaseComposeFragment
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.feature.home.ro.CoinInfoDataRO
-import com.soma.coinviewer.i18n.Currency
-import com.soma.coinviewer.i18n.USDCurrency
 import com.soma.coinviewer.navigation.DeepLinkRoute
 import com.soma.coinviewer.navigation.NavigationTarget
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,7 +65,6 @@ class HomeFragment : BaseComposeFragment() {
                 ListSortType.ONE_DAY_CHANGE_DESC -> priceChangeDescData
             }.collectAsStateWithLifecycle()
             val howToShowSymbols by howToShowSymbols.collectAsStateWithLifecycle()
-            val currency by currency.collectAsStateWithLifecycle()
 
             LaunchedEffect(Unit) {
                 loadHowToShowSymbols()
@@ -77,7 +74,6 @@ class HomeFragment : BaseComposeFragment() {
             HomeScreen(
                 howToShowSymbols = howToShowSymbols,
                 listSortType = listSortType,
-                currency = currency,
                 coinData = currentData,
                 updateSortType = ::updateSortType,
                 navigateToCoinDetail = { coinId ->
@@ -92,7 +88,6 @@ class HomeFragment : BaseComposeFragment() {
 private fun HomeScreen(
     howToShowSymbols: HowToShowSymbols,
     listSortType: ListSortType,
-    currency: Currency,
     coinData: List<CoinInfoDataRO>,
     updateSortType: (ListSortType, ListSortType) -> Unit,
     navigateToCoinDetail: (String) -> Unit,
@@ -105,7 +100,6 @@ private fun HomeScreen(
         ) {
             CoinListHeader(
                 listSortType = listSortType,
-                currency = currency,
                 updateSortType = updateSortType,
             )
 
@@ -129,7 +123,6 @@ private fun HomeScreen(
 @Composable
 private fun CoinListHeader(
     listSortType: ListSortType,
-    currency: Currency,
     updateSortType: (ListSortType, ListSortType) -> Unit,
 ) {
     Row(
@@ -150,7 +143,7 @@ private fun CoinListHeader(
         )
 
         HeaderItem(
-            text = stringResource(R.string.price) + "(${currency.postUnit})",
+            text = stringResource(R.string.price),
             listSortType = listSortType,
             currentAscType = ListSortType.PRICE_ASC,
             currentDescType = ListSortType.PRICE_DESC,
@@ -398,7 +391,6 @@ private fun PreviewHomeScreenLinear() {
     HomeScreen(
         howToShowSymbols = HowToShowSymbols.LINEAR,
         listSortType = ListSortType.TOTAL_TRADE,
-        currency = USDCurrency,
         coinData = dummyCoinDataRO,
         updateSortType = { _, _ -> },
         navigateToCoinDetail = {}
@@ -434,7 +426,6 @@ private fun PreviewHomeScreenGrid() {
     HomeScreen(
         howToShowSymbols = HowToShowSymbols.GRID2X2,
         listSortType = ListSortType.TOTAL_TRADE,
-        currency = USDCurrency,
         coinData = dummyCoinDataRO,
         updateSortType = { _, _ -> },
         navigateToCoinDetail = {}

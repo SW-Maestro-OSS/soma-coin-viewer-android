@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="setting_price_currency">단위</string>
+    <string name="setting_dollar">달러</string>
+    <string name="setting_won">원</string>
+    <string name="setting_language">언어</string>
+    <string name="setting_english">영어</string>
+    <string name="setting_korean">한국어</string>
+    <string name="setting_show_symbol_grid">2*2 그리드로 보기</string>
+</resources>

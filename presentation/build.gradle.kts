@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":feature:setting"))
     implementation(project(":feature:splash"))
     implementation(project(":feature:coin-detail"))
+    implementation(project(":core:i18n"))
     
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

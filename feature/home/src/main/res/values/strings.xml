@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="symbol">Symbol</string>
-    <string name="price">Price</string>
+    <string name="price">Price("\$")</string>
     <string name="change_24h">24h Change %</string>
 </resources>
