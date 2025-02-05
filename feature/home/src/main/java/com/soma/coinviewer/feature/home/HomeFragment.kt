@@ -103,95 +103,69 @@ private fun HomeScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(40.dp)
-                    .background(Color.LightGray),
-            ) {
-                HeaderItem(
-                    text = stringResource(R.string.symbol),
-                    listSortType = listSortType,
-                    currentAscType = ListSortType.SYMBOL_ASC,
-                    currentDescType = ListSortType.SYMBOL_DESC,
-                    updateSortType = updateSortType,
-                    modifier = Modifier.weight(1f)
-                )
-
-                HeaderItem(
-                    text = stringResource(R.string.price) + "(${currency.postUnit})",
-                    listSortType = listSortType,
-                    currentAscType = ListSortType.PRICE_ASC,
-                    currentDescType = ListSortType.PRICE_DESC,
-                    updateSortType = updateSortType,
-                    modifier = Modifier.weight(1f)
-                )
-
-                HeaderItem(
-                    text = stringResource(R.string.change_24h),
-                    listSortType = listSortType,
-                    currentAscType = ListSortType.ONE_DAY_CHANGE_ASC,
-                    currentDescType = ListSortType.ONE_DAY_CHANGE_DESC,
-                    updateSortType = updateSortType,
-                    modifier = Modifier.weight(1f)
-                )
-            }
+            CoinListHeader(
+                listSortType = listSortType,
+                currency = currency,
+                updateSortType = updateSortType,
+            )
 
             when (howToShowSymbols.value) {
-                HowToShowSymbols.LINEAR.value -> {
-                    val listState = rememberLazyListState()
+                HowToShowSymbols.LINEAR.value -> LinearCoinList(
+                    listSortType = listSortType,
+                    coinData = coinData,
+                    navigateToCoinDetail = navigateToCoinDetail,
+                )
 
-                    LaunchedEffect(listSortType) {
-                        listState.scrollToItem(0)
-                    }
-
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        itemsIndexed(
-                            items = coinData,
-                            key = { _, data -> data.symbol },
-                        ) { idx, data ->
-                            CoinRow(
-                                coinData = data,
-                                navigateToCoinDetail = navigateToCoinDetail,
-                            )
-
-                            if (idx != coinData.lastIndex) {
-                                HorizontalDivider(color = Color.DarkGray)
-                            }
-                        }
-                    }
-                }
-
-                HowToShowSymbols.GRID2X2.value -> {
-                    val listState = rememberLazyGridState()
-
-                    LaunchedEffect(listSortType) {
-                        listState.scrollToItem(0)
-                    }
-
-                    LazyVerticalGrid(
-                        state = listState,
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.fillMaxSize(),
-                    ) {
-                        items(
-                            items = coinData,
-                            key = { data -> data.symbol },
-                        ) { data ->
-                            CoinGridCard(
-                                coinData = data,
-                                navigateToCoinDetail = navigateToCoinDetail,
-                            )
-                        }
-                    }
-                }
+                HowToShowSymbols.GRID2X2.value -> GridCoinList(
+                    listSortType = listSortType,
+                    coinData = coinData,
+                    navigateToCoinDetail = navigateToCoinDetail,
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun CoinListHeader(
+    listSortType: ListSortType,
+    currency: Currency,
+    updateSortType: (ListSortType, ListSortType) -> Unit,
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp)
+            .background(Color.LightGray),
+    ) {
+        HeaderItem(
+            text = stringResource(R.string.symbol),
+            listSortType = listSortType,
+            currentAscType = ListSortType.SYMBOL_ASC,
+            currentDescType = ListSortType.SYMBOL_DESC,
+            updateSortType = updateSortType,
+            modifier = Modifier.weight(1f)
+        )
+
+        HeaderItem(
+            text = stringResource(R.string.price) + "(${currency.postUnit})",
+            listSortType = listSortType,
+            currentAscType = ListSortType.PRICE_ASC,
+            currentDescType = ListSortType.PRICE_DESC,
+            updateSortType = updateSortType,
+            modifier = Modifier.weight(1f)
+        )
+
+        HeaderItem(
+            text = stringResource(R.string.change_24h),
+            listSortType = listSortType,
+            currentAscType = ListSortType.ONE_DAY_CHANGE_ASC,
+            currentDescType = ListSortType.ONE_DAY_CHANGE_DESC,
+            updateSortType = updateSortType,
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
@@ -227,6 +201,38 @@ private fun HeaderItem(
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
         )
+    }
+}
+
+@Composable
+private fun LinearCoinList(
+    listSortType: ListSortType,
+    coinData: List<CoinInfoDataRO>,
+    navigateToCoinDetail: (String) -> Unit,
+) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listSortType) {
+        listState.scrollToItem(0)
+    }
+
+    LazyColumn(
+        state = listState,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        itemsIndexed(
+            items = coinData,
+            key = { _, data -> data.symbol },
+        ) { idx, data ->
+            CoinRow(
+                coinData = data,
+                navigateToCoinDetail = navigateToCoinDetail,
+            )
+
+            if (idx != coinData.lastIndex) {
+                HorizontalDivider(color = Color.DarkGray)
+            }
+        }
     }
 }
 
@@ -282,7 +288,36 @@ private fun CoinRow(
 }
 
 @Composable
-private fun CoinGridCard(
+private fun GridCoinList(
+    listSortType: ListSortType,
+    coinData: List<CoinInfoDataRO>,
+    navigateToCoinDetail: (String) -> Unit,
+) {
+    val listState = rememberLazyGridState()
+
+    LaunchedEffect(listSortType) {
+        listState.scrollToItem(0)
+    }
+
+    LazyVerticalGrid(
+        state = listState,
+        columns = GridCells.Fixed(2),
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        items(
+            items = coinData,
+            key = { data -> data.symbol },
+        ) { data ->
+            CoinGrid(
+                coinData = data,
+                navigateToCoinDetail = navigateToCoinDetail,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CoinGrid(
     coinData: CoinInfoDataRO,
     navigateToCoinDetail: (String) -> Unit,
 ) {
@@ -440,7 +475,7 @@ private fun PreviewCoinGridCard() {
         coinIconUrl = "https://cryptologos.cc/logos/bitcoin-btc-logo.png"
     )
 
-    CoinGridCard(
+    CoinGrid(
         coinData = dummyCoinDataRO,
         navigateToCoinDetail = {}
     )
