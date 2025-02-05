@@ -1,8 +1,8 @@
 package com.soma.coinviewer.domain.repository
 
-import com.soma.coinviewer.domain.model.exchangerate.ExchangeRate
+import java.math.BigDecimal
 
 interface ExchangeRateRepository {
     suspend fun updateExchangeRate()
-    suspend fun getExchangeRate(currencyCode: String): ExchangeRate
+    suspend fun getExchangeRate(currencyCode: String): BigDecimal
 }

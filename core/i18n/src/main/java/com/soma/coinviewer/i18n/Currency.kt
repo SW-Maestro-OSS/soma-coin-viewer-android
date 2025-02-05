@@ -13,7 +13,7 @@ val koreanCurrency = Currency(
     prefixSign = "₩",
     postUnit = "원",
     decimalFormat = NumberFormat.getInstance(Locale.KOREA).apply {
-        maximumFractionDigits = 0
+        maximumFractionDigits = 2
     }
 )
 
@@ -22,6 +22,6 @@ val USDCurrency = Currency(
     postUnit = "dollars",
     decimalFormat = NumberFormat.getInstance(Locale.US).apply {
         minimumFractionDigits = 2
-        maximumFractionDigits = 2
+        maximumFractionDigits = 4
     }
 )

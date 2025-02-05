@@ -4,10 +4,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.soma.coinviewer.i18n.I18NEvent
 import com.soma.coinviewer.i18n.I18NHelper
 import com.soma.coinviewer.i18n.SelectedRegion
 import com.soma.coinviewer.i18n.USDCurrency
 import com.soma.coinviewer.i18n.koreanCurrency
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.util.Locale
@@ -16,6 +19,8 @@ import javax.inject.Inject
 class I18NDataSource @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : I18NHelper {
+    override val i18NEventBus: Channel<I18NEvent> = Channel(BUFFERED)
+
     override suspend fun saveRegion(selectedRegion: SelectedRegion) {
         val currency = when {
             selectedRegion.currency.prefixSign == "₩" &&

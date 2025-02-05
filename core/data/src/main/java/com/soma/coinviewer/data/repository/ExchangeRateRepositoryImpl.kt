@@ -2,9 +2,9 @@ package com.soma.coinviewer.data.repository
 
 import com.soma.coinviewer.data.datastore.datasource.LocalExchangeRateDataSource
 import com.soma.coinviewer.data.network.datasource.RemoteExchangeRateDataSource
-import com.soma.coinviewer.domain.model.exchangerate.ExchangeRate
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
-import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.first
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
@@ -36,8 +36,8 @@ class ExchangeRateRepositoryImpl @Inject constructor(
             .onEach { localExchangeRateDataSource.setExchangeRate(it) }
     }
 
-    override suspend fun getExchangeRate(currencyCode: String): ExchangeRate {
-        return localExchangeRateDataSource.getExchangeRate(currencyCode).last()
+    override suspend fun getExchangeRate(currencyCode: String): BigDecimal {
+        return localExchangeRateDataSource.getExchangeRate(currencyCode).first()
     }
 
     companion object {
