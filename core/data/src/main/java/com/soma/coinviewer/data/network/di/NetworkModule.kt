@@ -17,7 +17,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     private const val BINANCE_STREAM_BASE_URL = "wss://fstream.binance.com/ws/!ticker@arr"
-    private const val OPEN_API_BASE_URL = "http://www.koreaexim.go.kr/"
+    private const val OPEN_API_BASE_URL = "https://www.koreaexim.go.kr/"
 
     @Provides
     @Singleton
