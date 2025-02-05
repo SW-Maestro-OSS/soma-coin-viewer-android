@@ -3,6 +3,7 @@ package com.soma.coinviewer.feature.home
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,12 +41,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.soma.coinviewer.common_ui.base.BaseComposeFragment
-import com.soma.coinviewer.domain.model.coin.CoinInfoData
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
+import com.soma.coinviewer.feature.home.ro.CoinInfoDataRO
+import com.soma.coinviewer.i18n.Currency
+import com.soma.coinviewer.i18n.USDCurrency
 import com.soma.coinviewer.navigation.DeepLinkRoute
 import com.soma.coinviewer.navigation.NavigationTarget
 import dagger.hilt.android.AndroidEntryPoint
-import java.math.BigDecimal
 
 @AndroidEntryPoint
 class HomeFragment : BaseComposeFragment() {
@@ -64,14 +67,17 @@ class HomeFragment : BaseComposeFragment() {
                 ListSortType.ONE_DAY_CHANGE_DESC -> priceChangeDescData
             }.collectAsStateWithLifecycle()
             val howToShowSymbols by howToShowSymbols.collectAsStateWithLifecycle()
+            val currency by currency.collectAsStateWithLifecycle()
 
             LaunchedEffect(Unit) {
                 loadHowToShowSymbols()
+                initExchangeRate()
             }
 
             HomeScreen(
                 howToShowSymbols = howToShowSymbols,
                 listSortType = listSortType,
+                currency = currency,
                 coinData = currentData,
                 updateSortType = ::updateSortType,
                 navigateToCoinDetail = { coinId ->
@@ -86,7 +92,8 @@ class HomeFragment : BaseComposeFragment() {
 private fun HomeScreen(
     howToShowSymbols: HowToShowSymbols,
     listSortType: ListSortType,
-    coinData: List<CoinInfoData>,
+    currency: Currency,
+    coinData: List<CoinInfoDataRO>,
     updateSortType: (ListSortType, ListSortType) -> Unit,
     navigateToCoinDetail: (String) -> Unit,
 ) {
@@ -114,7 +121,7 @@ private fun HomeScreen(
                 )
 
                 HeaderItem(
-                    text = stringResource(R.string.price),
+                    text = stringResource(R.string.price) + "(${currency.postUnit})",
                     listSortType = listSortType,
                     currentAscType = ListSortType.PRICE_ASC,
                     currentDescType = ListSortType.PRICE_DESC,
@@ -180,8 +187,6 @@ private fun HomeScreen(
                                 coinData = data,
                                 navigateToCoinDetail = navigateToCoinDetail,
                             )
-
-                            HorizontalDivider(color = Color.DarkGray)
                         }
                     }
                 }
@@ -227,7 +232,7 @@ private fun HeaderItem(
 
 @Composable
 private fun CoinRow(
-    coinData: CoinInfoData,
+    coinData: CoinInfoDataRO,
     navigateToCoinDetail: (String) -> Unit,
 ) {
     Row(
@@ -252,29 +257,25 @@ private fun CoinRow(
             text = coinData.symbol,
             fontSize = 13.sp,
             textAlign = TextAlign.Start,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
         )
 
         Text(
-            text = coinData.price.toPlainString(),
+            text = coinData.price,
             fontSize = 13.sp,
             textAlign = TextAlign.End,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
         )
 
-        val (priceChangePercentText, priceChangePercentColor) = remember(coinData.priceChangePercent) {
-            if (coinData.priceChangePercent >= BigDecimal(0.0)) {
-                "+" + coinData.priceChangePercent.toString() to Color.Green
-            } else {
-                coinData.priceChangePercent.toString() to Color.Red
-            }
-        }
-
         Text(
-            text = "$priceChangePercentText %",
+            text = coinData.priceChangePercent.text,
             fontSize = 13.sp,
             textAlign = TextAlign.End,
-            color = priceChangePercentColor,
+            color = coinData.priceChangePercent.color,
             modifier = Modifier.weight(1f),
         )
     }
@@ -282,13 +283,14 @@ private fun CoinRow(
 
 @Composable
 private fun CoinGridCard(
-    coinData: CoinInfoData,
+    coinData: CoinInfoDataRO,
     navigateToCoinDetail: (String) -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(2.dp),
         modifier = Modifier
             .fillMaxWidth()
+            .border(width = 0.5.dp, color = Color.DarkGray)
             .clickable { navigateToCoinDetail(coinData.symbol) }
             .padding(horizontal = 4.dp, vertical = 10.dp),
     ) {
@@ -298,38 +300,35 @@ private fun CoinGridCard(
             error = painterResource(com.soma.coinviewer.common_ui.R.drawable.ic_coin_placeholder),
             onError = { Log.w("Img Error", coinData.coinIconUrl) },
             contentDescription = "",
-            modifier = Modifier
-                .size(60.dp)
+            modifier = Modifier.size(60.dp),
         )
 
         Column(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier
-                .weight(1f)
+            modifier = Modifier.weight(1f),
         ) {
             Text(
                 text = coinData.symbol,
-                fontSize = 18.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 15.sp,
             )
 
             Text(
-                text = coinData.price.toPlainString(),
-                fontSize = 18.sp,
+                text = coinData.price,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 15.sp,
             )
 
-            val (priceChangePercentText, priceChangePercentColor) = remember(coinData.priceChangePercent) {
-                if (coinData.priceChangePercent >= BigDecimal(0.0)) {
-                    "+" + coinData.priceChangePercent.toString() to Color.Green
-                } else {
-                    coinData.priceChangePercent.toString() to Color.Red
-                }
-            }
-
             Text(
-                text = "$priceChangePercentText %",
-                fontSize = 18.sp,
-                color = priceChangePercentColor,
+                text = coinData.priceChangePercent.text,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 15.sp,
+                textAlign = TextAlign.End,
+                color = coinData.priceChangePercent.color,
             )
         }
     }
@@ -338,19 +337,25 @@ private fun CoinGridCard(
 @Preview
 @Composable
 private fun PreviewHomeScreenLinear() {
-    val dummyCoinData = listOf(
-        CoinInfoData(
+    val dummyCoinDataRO = listOf(
+        CoinInfoDataRO(
             symbol = "BTC",
-            totalTradedQuoteAssetVolume = BigDecimal("1000000"),
-            price = BigDecimal("40000.5"),
-            priceChangePercent = BigDecimal("2.5"),
+            totalTradedQuoteAssetVolume = "$1,000,000",
+            price = "$40,000.50",
+            priceChangePercent = CoinInfoDataRO.FormattedText(
+                text = "+2.5%",
+                color = Color.Green
+            ),
             coinIconUrl = "https://cryptologos.cc/logos/bitcoin-btc-logo.png"
         ),
-        CoinInfoData(
+        CoinInfoDataRO(
             symbol = "ETH",
-            totalTradedQuoteAssetVolume = BigDecimal("500000"),
-            price = BigDecimal("2500.75"),
-            priceChangePercent = BigDecimal("-1.2"),
+            totalTradedQuoteAssetVolume = "$500,000",
+            price = "$2,500.75",
+            priceChangePercent = CoinInfoDataRO.FormattedText(
+                text = "-1.2%",
+                color = Color.Red
+            ),
             coinIconUrl = "https://cryptologos.cc/logos/ethereum-eth-logo.png"
         )
     )
@@ -358,7 +363,8 @@ private fun PreviewHomeScreenLinear() {
     HomeScreen(
         howToShowSymbols = HowToShowSymbols.LINEAR,
         listSortType = ListSortType.TOTAL_TRADE,
-        coinData = dummyCoinData,
+        currency = USDCurrency,
+        coinData = dummyCoinDataRO,
         updateSortType = { _, _ -> },
         navigateToCoinDetail = {}
     )
@@ -367,19 +373,25 @@ private fun PreviewHomeScreenLinear() {
 @Preview
 @Composable
 private fun PreviewHomeScreenGrid() {
-    val dummyCoinData = listOf(
-        CoinInfoData(
+    val dummyCoinDataRO = listOf(
+        CoinInfoDataRO(
             symbol = "BTC",
-            totalTradedQuoteAssetVolume = BigDecimal("1000000"),
-            price = BigDecimal("40000.5"),
-            priceChangePercent = BigDecimal("2.5"),
+            totalTradedQuoteAssetVolume = "$1,000,000",
+            price = "$40,000.50",
+            priceChangePercent = CoinInfoDataRO.FormattedText(
+                text = "+2.5%",
+                color = Color.Green
+            ),
             coinIconUrl = "https://cryptologos.cc/logos/bitcoin-btc-logo.png"
         ),
-        CoinInfoData(
+        CoinInfoDataRO(
             symbol = "ETH",
-            totalTradedQuoteAssetVolume = BigDecimal("500000"),
-            price = BigDecimal("2500.75"),
-            priceChangePercent = BigDecimal("-1.2"),
+            totalTradedQuoteAssetVolume = "$500,000",
+            price = "$2,500.75",
+            priceChangePercent = CoinInfoDataRO.FormattedText(
+                text = "-1.2%",
+                color = Color.Red
+            ),
             coinIconUrl = "https://cryptologos.cc/logos/ethereum-eth-logo.png"
         )
     )
@@ -387,7 +399,8 @@ private fun PreviewHomeScreenGrid() {
     HomeScreen(
         howToShowSymbols = HowToShowSymbols.GRID2X2,
         listSortType = ListSortType.TOTAL_TRADE,
-        coinData = dummyCoinData,
+        currency = USDCurrency,
+        coinData = dummyCoinDataRO,
         updateSortType = { _, _ -> },
         navigateToCoinDetail = {}
     )
@@ -396,16 +409,19 @@ private fun PreviewHomeScreenGrid() {
 @Preview
 @Composable
 private fun PreviewCoinRow() {
-    val dummyCoinData = CoinInfoData(
+    val dummyCoinDataRO = CoinInfoDataRO(
         symbol = "BTC",
-        totalTradedQuoteAssetVolume = BigDecimal("1000000"),
-        price = BigDecimal("40000.5"),
-        priceChangePercent = BigDecimal("2.5"),
+        totalTradedQuoteAssetVolume = "$1,000,000",
+        price = "$40,000.50",
+        priceChangePercent = CoinInfoDataRO.FormattedText(
+            text = "+2.5%",
+            color = Color.Green
+        ),
         coinIconUrl = "https://cryptologos.cc/logos/bitcoin-btc-logo.png"
     )
 
     CoinRow(
-        coinData = dummyCoinData,
+        coinData = dummyCoinDataRO,
         navigateToCoinDetail = {}
     )
 }
@@ -413,16 +429,19 @@ private fun PreviewCoinRow() {
 @Preview
 @Composable
 private fun PreviewCoinGridCard() {
-    val dummyCoinData = CoinInfoData(
+    val dummyCoinDataRO = CoinInfoDataRO(
         symbol = "BTC",
-        totalTradedQuoteAssetVolume = BigDecimal("1000000"),
-        price = BigDecimal("40000.5"),
-        priceChangePercent = BigDecimal("2.5"),
+        totalTradedQuoteAssetVolume = "$1,000,000",
+        price = "$40,000.50",
+        priceChangePercent = CoinInfoDataRO.FormattedText(
+            text = "+2.5%",
+            color = Color.Green
+        ),
         coinIconUrl = "https://cryptologos.cc/logos/bitcoin-btc-logo.png"
     )
 
     CoinGridCard(
-        coinData = dummyCoinData,
+        coinData = dummyCoinDataRO,
         navigateToCoinDetail = {}
     )
 }

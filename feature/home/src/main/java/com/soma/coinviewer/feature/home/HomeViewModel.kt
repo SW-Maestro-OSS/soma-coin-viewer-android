@@ -4,7 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.domain.repository.CoinInfoRepository
+import com.soma.coinviewer.domain.repository.ExchangeRateRepository
 import com.soma.coinviewer.domain.repository.SettingRepository
+import com.soma.coinviewer.feature.home.ro.toRO
+import com.soma.coinviewer.i18n.I18NHelper
+import com.soma.coinviewer.i18n.USDCurrency
 import com.soma.coinviewer.navigation.NavigationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -15,14 +19,23 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val coinInfoRepository: CoinInfoRepository,
+    private val exchangeRateRepository: ExchangeRateRepository,
     private val settingRepository: SettingRepository,
     internal val navigationHelper: NavigationHelper,
+    private val i18NHelper: I18NHelper,
 ) : BaseViewModel() {
+
+    private val _currency = MutableStateFlow(USDCurrency)
+    val currency = _currency.asStateFlow()
+
+    private var exchangeRate: BigDecimal = BigDecimal.ONE
+
     private val _listSortType = MutableStateFlow(ListSortType.TOTAL_TRADE)
     internal val listSortType = _listSortType.asStateFlow()
 
@@ -39,6 +52,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedByDescending { it.totalTradedQuoteAssetVolume }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+                .map { it.toRO(currency.value, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -49,6 +63,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedBy { it.symbol }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+                .map { it.toRO(currency.value, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -59,6 +74,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedByDescending { it.symbol }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+                .map { it.toRO(currency.value, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -69,6 +85,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedBy { it.price }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+                .map { it.toRO(currency.value, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -79,6 +96,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedByDescending { it.price }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+                .map { it.toRO(currency.value, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -89,6 +107,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedBy { it.priceChangePercent }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+                .map { it.toRO(currency.value, exchangeRate) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -99,6 +118,7 @@ class HomeViewModel @Inject constructor(
         .map { coinInfos ->
             coinInfos.sortedByDescending { it.priceChangePercent }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
+                .map { it.toRO(currency.value, exchangeRate) }
         }
         .stateIn(
             scope = viewModelScope,
@@ -108,6 +128,14 @@ class HomeViewModel @Inject constructor(
 
     private val _howToShowSymbols = MutableStateFlow<HowToShowSymbols>(HowToShowSymbols.DEFAULT)
     internal val howToShowSymbols = _howToShowSymbols.asStateFlow()
+
+    internal fun initExchangeRate() = viewModelScope.launch {
+        _currency.value = i18NHelper.getRegion().currency
+        exchangeRate = when (currency.value) {
+            USDCurrency -> BigDecimal.ONE
+            else -> exchangeRateRepository.getExchangeRate("USD").receiveRateInWon
+        }
+    }
 
     internal fun loadHowToShowSymbols() = viewModelScope.launch {
         _howToShowSymbols.value = settingRepository.getHowToShowSymbols()

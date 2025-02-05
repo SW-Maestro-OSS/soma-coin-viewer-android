@@ -28,9 +28,9 @@ class LocalExchangeRateDataSource @Inject constructor(
                 val properties = it
                     .removePrefix("ExchangeRate(").removeSuffix(")")
                     .split(",")
-                    .associate {
-                        val (key, value) = it.split("=")
-                        key to value
+                    .associate { property ->
+                        val (key, value) = property.trim().split("=")  // trim() 추가
+                        key.trim() to value.trim()
                     }
 
                 ExchangeRate(
@@ -38,14 +38,14 @@ class LocalExchangeRateDataSource @Inject constructor(
                         ?: throw NullPointerException("currencyCode가 유효하지 않습니다."),
                     receiveRateInWon = BigDecimal(
                         properties["receiveRateInWon"]
-                            ?: throw NullPointerException("receiveRateInWon가 유효하지 않습니다.")
+                            ?: throw NullPointerException("${properties["receiveRateInWon"]} receiveRateInWon가 유효하지 않습니다.")
                     ),
                     sendRateToForeignCurrency = BigDecimal(
                         properties["sendRateToForeignCurrency"]
                             ?: throw NullPointerException("sendRateToForeignCurrency가 유효하지 않습니다.")
                     ),
                 )
-            } ?: throw NullPointerException("환율 데이터를 찾을 수 없습니다.")
+            } ?: throw NullPointerException("$currencyCode 환율 데이터를 찾을 수 없습니다.")
         }
     }
 
