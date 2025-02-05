@@ -15,39 +15,25 @@ class LocalExchangeRateDataSource @Inject constructor(
 ) {
     suspend fun setExchangeRate(exchangeRate: ExchangeRate) {
         dataStore.savePreference(
-            stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + exchangeRate.currencyCode),
-            exchangeRate,
-        ) { it.toString() }
+            key = stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + exchangeRate.currencyCode),
+            value = exchangeRate.receiveRateInWon,
+        ) { it.stripTrailingZeros().toPlainString() }
     }
 
-    fun getExchangeRate(currencyCode: String): Flow<ExchangeRate> {
+    fun getExchangeRate(currencyCode: String): Flow<BigDecimal> {
         return dataStore.getPreference(
             stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + currencyCode)
         ) { data ->
             data?.let {
-                val properties = it
-                    .removePrefix("ExchangeRate(").removeSuffix(")")
-                    .split(",")
-                    .associate { property ->
-                        val (key, value) = property.trim().split("=")  // trim() 추가
-                        key.trim() to value.trim()
-                    }
-
-                ExchangeRate(
-                    currencyCode = properties["currencyCode"]
-                        ?: throw NullPointerException("currencyCode가 유효하지 않습니다."),
-                    receiveRateInWon = BigDecimal(
-                        properties["receiveRateInWon"]
-                            ?: throw NullPointerException("${properties["receiveRateInWon"]} receiveRateInWon가 유효하지 않습니다.")
-                    ),
-                    sendRateToForeignCurrency = BigDecimal(
-                        properties["sendRateToForeignCurrency"]
-                            ?: throw NullPointerException("sendRateToForeignCurrency가 유효하지 않습니다.")
-                    ),
-                )
+                try {
+                    BigDecimal(it)
+                } catch (e: Exception) {
+                    throw IllegalStateException("환율 데이터 변환 실패: $it", e)
+                }
             } ?: throw NullPointerException("$currencyCode 환율 데이터를 찾을 수 없습니다.")
         }
     }
+
 
     companion object {
         private const val EXCHANGE_RATE_PREFERENCE_KEY = "exchange_rate"

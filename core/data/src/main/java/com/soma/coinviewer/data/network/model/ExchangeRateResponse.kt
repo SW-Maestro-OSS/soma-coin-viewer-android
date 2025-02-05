@@ -37,7 +37,6 @@ data class ExchangeRateResponse(
 ) {
     fun toVO() = ExchangeRate(
         currencyCode = currencyCode,
-        sendRateToForeignCurrency = BigDecimal(sendRateToForeignCurrency.replace(",", "")),
         receiveRateInWon = BigDecimal(receiveRateInWon.replace(",", "")),
     )
 }

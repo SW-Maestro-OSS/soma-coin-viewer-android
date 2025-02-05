@@ -1,10 +1,11 @@
 package com.soma.coinviewer.data.repository
 
+import android.util.Log
 import com.soma.coinviewer.data.datastore.datasource.LocalExchangeRateDataSource
 import com.soma.coinviewer.data.network.datasource.RemoteExchangeRateDataSource
-import com.soma.coinviewer.domain.model.exchangerate.ExchangeRate
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
 import kotlinx.coroutines.flow.first
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
@@ -27,16 +28,21 @@ class ExchangeRateRepositoryImpl @Inject constructor(
 
         if (result.isNotEmpty()) {
             result.map { it.toVO() }
-                .onEach { localExchangeRateDataSource.setExchangeRate(it) }
+                .onEach {
+                    Log.d("test", it.toString())
+                    localExchangeRateDataSource.setExchangeRate(it)
+                }
             return
         }
 
         remoteExchangeRateDataSource.getExchangeRate(today.minusDays(1))
             .map { it.toVO() }
-            .onEach { localExchangeRateDataSource.setExchangeRate(it) }
+            .onEach {
+                Log.d("test", it.toString())
+                localExchangeRateDataSource.setExchangeRate(it) }
     }
 
-    override suspend fun getExchangeRate(currencyCode: String): ExchangeRate {
+    override suspend fun getExchangeRate(currencyCode: String): BigDecimal {
         return localExchangeRateDataSource.getExchangeRate(currencyCode).first()
     }
 

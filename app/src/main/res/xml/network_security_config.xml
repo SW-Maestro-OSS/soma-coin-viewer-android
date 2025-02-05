@@ -1,5 +1,5 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">www.koreaexim.go.kr</domain>
+        <domain includeSubdomains="true">koreaexim.go.kr</domain>
     </domain-config>
 </network-security-config>

@@ -133,7 +133,7 @@ class HomeViewModel @Inject constructor(
         _currency.value = i18NHelper.getRegion().currency
         exchangeRate = when (currency.value) {
             USDCurrency -> BigDecimal.ONE
-            else -> exchangeRateRepository.getExchangeRate("USD").receiveRateInWon
+            else -> exchangeRateRepository.getExchangeRate("USD")
         }
     }
 
