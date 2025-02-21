@@ -23,20 +23,21 @@ import java.math.BigDecimal
  */
 
 data class ExchangeRateResponse(
-    @SerializedName("result") val result: Int,
-    @SerializedName("cur_unit") val currencyCode: String,
-    @SerializedName("cur_nm") val currencyName: String,
-    @SerializedName("ttb") val receiveRateInWon: String,
-    @SerializedName("tts") val sendRateToForeignCurrency: String,
-    @SerializedName("deal_bar_r") val baseExchangeRate: String,
-    @SerializedName("bkpr") val bookValueRate: String,
-    @SerializedName("yy_efee_r") val yearlyExchangeFeeRate: String,
-    @SerializedName("ten_dd_efee_r") val tenDayExchangeFeeRate: String,
-    @SerializedName("kftc_deal_bas_r") val seoulFxBaseRate: String,
-    @SerializedName("kftc_bkpr") val seoulFxBookValueRate: String,
+    @SerializedName("result") val result: Int?,
+    @SerializedName("cur_unit") val currencyCode: String?,
+    @SerializedName("cur_nm") val currencyName: String?,
+    @SerializedName("ttb") val receiveRateInWon: String?,
+    @SerializedName("tts") val sendRateToForeignCurrency: String?,
+    @SerializedName("deal_bar_r") val baseExchangeRate: String?,
+    @SerializedName("bkpr") val bookValueRate: String?,
+    @SerializedName("yy_efee_r") val yearlyExchangeFeeRate: String?,
+    @SerializedName("ten_dd_efee_r") val tenDayExchangeFeeRate: String?,
+    @SerializedName("kftc_deal_bas_r") val seoulFxBaseRate: String?,
+    @SerializedName("kftc_bkpr") val seoulFxBookValueRate: String?,
 ) {
     fun toVO() = ExchangeRate(
-        currencyCode = currencyCode,
-        receiveRateInWon = BigDecimal(receiveRateInWon.replace(",", "")),
+        currencyCode = currencyCode ?: "UNKNOWN",
+        receiveRateInWon = receiveRateInWon?.let { BigDecimal(it.replace(",", "")) }
+            ?: BigDecimal.ZERO,
     )
 }
