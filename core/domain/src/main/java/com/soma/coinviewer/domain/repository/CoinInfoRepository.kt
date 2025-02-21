@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface CoinInfoRepository {
     val coinInfoData: StateFlow<HashMap<String, CoinInfoData>>
 
-    fun connect()
-    fun disconnect()
-    fun subscribeWebSocketData()
+    fun connect(): Result<Unit>
+    fun disconnect(): Result<Unit>
+    fun subscribeWebSocketData(): Result<Unit>
 }

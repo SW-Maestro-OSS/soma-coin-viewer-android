@@ -2,6 +2,7 @@ package com.soma.coinviewer.feature.home
 
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
+import com.soma.coinviewer.domain.model.exception.ErrorHelper
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.domain.repository.CoinInfoRepository
 import com.soma.coinviewer.domain.repository.ExchangeRateRepository
@@ -16,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -30,6 +32,7 @@ class HomeViewModel @Inject constructor(
     private val settingRepository: SettingRepository,
     internal val navigationHelper: NavigationHelper,
     private val i18NHelper: I18NHelper,
+    private val errorHelper: ErrorHelper,
 ) : BaseViewModel() {
     private var currency: Currency = USDCurrency
     private var exchangeRate: BigDecimal = BigDecimal.ONE
@@ -40,6 +43,7 @@ class HomeViewModel @Inject constructor(
     private val baseCoinData = coinInfoRepository.coinInfoData
         .onEach { delay(200L) }
         .map { data -> data.map { it.value }.toList() }
+        .catch { throwable -> errorHelper.sendError(throwable) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -117,8 +121,7 @@ class HomeViewModel @Inject constructor(
             coinInfos.sortedByDescending { it.priceChangePercent }
                 .take(COIN_INFO_TICKER_DATA_MAX_SIZE)
                 .map { it.toRO(currency, exchangeRate) }
-        }
-        .stateIn(
+        }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList()
@@ -128,15 +131,29 @@ class HomeViewModel @Inject constructor(
     internal val howToShowSymbols = _howToShowSymbols.asStateFlow()
 
     internal fun initExchangeRate() = viewModelScope.launch {
-        currency = i18NHelper.getRegion().currency
-        exchangeRate = when (currency) {
-            USDCurrency -> BigDecimal.ONE
-            else -> exchangeRateRepository.getExchangeRate("USD")
-        }
+        i18NHelper.getRegion()
+            .onSuccess {
+                currency = it.currency
+                exchangeRate = when (currency) {
+                    USDCurrency -> BigDecimal.ONE
+                    else -> exchangeRateRepository.getExchangeRate("USD")
+                        .getOrElse {
+                            errorHelper.sendError(it)
+                            return@launch
+                        }
+                }
+            }.onFailure {
+                errorHelper.sendError(it)
+            }
     }
 
     internal fun loadHowToShowSymbols() = viewModelScope.launch {
-        _howToShowSymbols.value = settingRepository.getHowToShowSymbols()
+        settingRepository.getHowToShowSymbols()
+            .onSuccess {
+                _howToShowSymbols.value = it
+            }.onFailure {
+                errorHelper.sendError(it)
+            }
     }
 
     internal fun updateSortType(asc: ListSortType, desc: ListSortType) {

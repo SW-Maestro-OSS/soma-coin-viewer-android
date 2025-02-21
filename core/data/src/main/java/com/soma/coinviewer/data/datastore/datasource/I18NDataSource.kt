@@ -21,7 +21,7 @@ class I18NDataSource @Inject constructor(
 ) : I18NHelper {
     override val i18NEventBus: Channel<I18NEvent> = Channel(BUFFERED)
 
-    override suspend fun saveRegion(selectedRegion: SelectedRegion) {
+    override suspend fun saveRegion(selectedRegion: SelectedRegion): Result<Unit> = runCatching {
         val currency = when {
             selectedRegion.currency.prefixSign == "₩" &&
                     selectedRegion.currency.postUnit == "원" -> "KRW"
@@ -44,41 +44,42 @@ class I18NDataSource @Inject constructor(
         }
     }
 
-    override suspend fun getRegion(): SelectedRegion = dataStore.data.map { preferences ->
-        val data = preferences[SELECTED_REGION_KEY]
-        data?.let {
-            val properties = it
-                .removePrefix("SelectedRegion(")
-                .removeSuffix(")")
-                .split(",")
-                .associate { property ->
-                    val (key, value) = property.split("=", limit = 2)
-                    key to value
+    override suspend fun getRegion(): Result<SelectedRegion> = runCatching {
+        dataStore.data.map { preferences ->
+            preferences[SELECTED_REGION_KEY]?.let {
+                val properties = it
+                    .removePrefix("SelectedRegion(")
+                    .removeSuffix(")")
+                    .split(",")
+                    .associate { property ->
+                        val (key, value) = property.split("=", limit = 2)
+                        key to value
+                    }
+
+                val currency = when (properties["currency"]) {
+                    "KRW" -> koreanCurrency
+                    "USD" -> USDCurrency
+                    else -> throw IllegalArgumentException("Invalid currency type: ${properties["currency"]}")
                 }
 
-            val currency = when (properties["currency"]) {
-                "KRW" -> koreanCurrency
-                "USD" -> USDCurrency
-                else -> throw IllegalArgumentException("Invalid currency type: ${properties["currency"]}")
-            }
+                val locale = Locale(
+                    properties["locale"]
+                        ?: throw NullPointerException("locale이 유효하지 않습니다.")
+                )
 
-            val locale = Locale(
-                properties["locale"]
-                    ?: throw NullPointerException("locale이 유효하지 않습니다.")
-            )
-
-            SelectedRegion(
-                locale = locale,
-                timezoneId = properties["timezoneId"]
-                    ?: throw NullPointerException("timezoneId가 유효하지 않습니다."),
-                language = Locale(
-                    properties["language"]
-                        ?: throw NullPointerException("language가 유효하지 않습니다.")
-                ),
-                currency = currency
-            )
-        } ?: throw NullPointerException("SelectedRegion 데이터를 찾을 수 없습니다.")
-    }.first()
+                SelectedRegion(
+                    locale = locale,
+                    timezoneId = properties["timezoneId"]
+                        ?: throw NullPointerException("timezoneId가 유효하지 않습니다."),
+                    language = Locale(
+                        properties["language"]
+                            ?: throw NullPointerException("language가 유효하지 않습니다.")
+                    ),
+                    currency = currency
+                )
+            } ?: throw NullPointerException("SelectedRegion 데이터를 찾을 수 없습니다.")
+        }.first()
+    }
 
     private companion object {
         val SELECTED_REGION_KEY = stringPreferencesKey("selectedRegion")

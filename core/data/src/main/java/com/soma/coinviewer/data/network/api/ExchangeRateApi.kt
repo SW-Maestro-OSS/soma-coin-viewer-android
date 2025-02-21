@@ -6,7 +6,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface OpenApi {
+interface ExchangeRateApi {
     @GET("site/program/financial/exchangeJSON")
     suspend fun getExchangeRate(
         @Query("authkey") authKey: String = BuildConfig.OPEN_API_KEY,

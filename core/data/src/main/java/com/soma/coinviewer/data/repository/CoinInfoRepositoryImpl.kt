@@ -1,6 +1,6 @@
 package com.soma.coinviewer.data.repository
 
-import com.soma.coinviewer.data.network.datasource.CoinInfoDataSource
+import com.soma.coinviewer.data.network.datasource.RemoteCoinInfoDataSource
 import com.soma.coinviewer.domain.model.coin.CoinInfoData
 import com.soma.coinviewer.domain.repository.CoinInfoRepository
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CoinInfoRepositoryImpl @Inject constructor(
-    private val webSocketDataSource: CoinInfoDataSource,
+    private val webSocketDataSource: RemoteCoinInfoDataSource,
     private val scope: CoroutineScope,
 ) : CoinInfoRepository {
     private val _coinInfoData = MutableStateFlow<HashMap<String, CoinInfoData>>(HashMap())
@@ -20,7 +20,7 @@ class CoinInfoRepositoryImpl @Inject constructor(
 
     override fun connect() = webSocketDataSource.connect()
     override fun disconnect() = webSocketDataSource.disconnect()
-    override fun subscribeWebSocketData() {
+    override fun subscribeWebSocketData(): Result<Unit> = runCatching {
         scope.launch {
             webSocketDataSource.subscribeWebSocket()
                 .collect { response ->

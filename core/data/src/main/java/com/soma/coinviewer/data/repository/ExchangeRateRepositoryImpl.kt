@@ -21,23 +21,25 @@ class ExchangeRateRepositoryImpl @Inject constructor(
      *
      * 응답 값이 **null**일 경우 하루 전의 데이터를 호출
      */
-    override suspend fun updateExchangeRate() {
+    override suspend fun updateExchangeRate() = runCatching {
         val today = LocalDate.now(ZoneId.of(SEOUL_TIME_ZONE))
         val result = remoteExchangeRateDataSource.getExchangeRate(today)
+            .getOrThrow()
 
         if (result.isNotEmpty()) {
             result.map { it.toVO() }
                 .onEach { localExchangeRateDataSource.setExchangeRate(it) }
-            return
+            return@runCatching
         }
 
         remoteExchangeRateDataSource.getExchangeRate(today.minusDays(1))
+            .getOrThrow()
             .map { it.toVO() }
             .onEach { localExchangeRateDataSource.setExchangeRate(it) }
     }
 
-    override suspend fun getExchangeRate(currencyCode: String): BigDecimal {
-        return localExchangeRateDataSource.getExchangeRate(currencyCode).first()
+    override suspend fun getExchangeRate(currencyCode: String): Result<BigDecimal> = runCatching {
+        localExchangeRateDataSource.retrieveExchangeRate(currencyCode).first()
     }
 
     companion object {

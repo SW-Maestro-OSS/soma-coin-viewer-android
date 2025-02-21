@@ -44,7 +44,7 @@ import com.soma.coinviewer.common_ui.base.BaseComposeFragment
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.feature.home.ro.CoinInfoDataRO
 import com.soma.coinviewer.navigation.DeepLinkRoute
-import com.soma.coinviewer.navigation.NavigationTarget
+import com.soma.coinviewer.navigation.NavigationEvent.To
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -54,6 +54,7 @@ class HomeFragment : BaseComposeFragment() {
     @Composable
     override fun ComposeLayout() {
         fragmentViewModel.apply {
+            val howToShowSymbols by howToShowSymbols.collectAsStateWithLifecycle()
             val listSortType by listSortType.collectAsStateWithLifecycle()
             val currentData by when (listSortType) {
                 ListSortType.TOTAL_TRADE -> totalTradeData
@@ -64,7 +65,6 @@ class HomeFragment : BaseComposeFragment() {
                 ListSortType.ONE_DAY_CHANGE_ASC -> priceChangeAscData
                 ListSortType.ONE_DAY_CHANGE_DESC -> priceChangeDescData
             }.collectAsStateWithLifecycle()
-            val howToShowSymbols by howToShowSymbols.collectAsStateWithLifecycle()
 
             LaunchedEffect(Unit) {
                 loadHowToShowSymbols()
@@ -76,8 +76,8 @@ class HomeFragment : BaseComposeFragment() {
                 listSortType = listSortType,
                 coinData = currentData,
                 updateSortType = ::updateSortType,
-                navigateToCoinDetail = { coinId ->
-                    navigationHelper.navigateTo(NavigationTarget(DeepLinkRoute.CoinDetail(coinId)))
+                onCoinClicked = { coinId ->
+                    navigationHelper.navigate(To(DeepLinkRoute.CoinDetail(coinId)))
                 },
             )
         }
@@ -90,7 +90,7 @@ private fun HomeScreen(
     listSortType: ListSortType,
     coinData: List<CoinInfoDataRO>,
     updateSortType: (ListSortType, ListSortType) -> Unit,
-    navigateToCoinDetail: (String) -> Unit,
+    onCoinClicked: (String) -> Unit,
 ) {
     Scaffold(containerColor = Color.White) { paddingValues ->
         Column(
@@ -107,13 +107,13 @@ private fun HomeScreen(
                 HowToShowSymbols.LINEAR.value -> LinearCoinList(
                     listSortType = listSortType,
                     coinData = coinData,
-                    navigateToCoinDetail = navigateToCoinDetail,
+                    navigateToCoinDetail = onCoinClicked,
                 )
 
                 HowToShowSymbols.GRID2X2.value -> GridCoinList(
                     listSortType = listSortType,
                     coinData = coinData,
-                    navigateToCoinDetail = navigateToCoinDetail,
+                    navigateToCoinDetail = onCoinClicked,
                 )
             }
         }
@@ -205,9 +205,7 @@ private fun LinearCoinList(
 ) {
     val listState = rememberLazyListState()
 
-    LaunchedEffect(listSortType) {
-        listState.scrollToItem(0)
-    }
+    LaunchedEffect(listSortType) { listState.scrollToItem(0) }
 
     LazyColumn(
         state = listState,
@@ -288,9 +286,7 @@ private fun GridCoinList(
 ) {
     val listState = rememberLazyGridState()
 
-    LaunchedEffect(listSortType) {
-        listState.scrollToItem(0)
-    }
+    LaunchedEffect(listSortType) { listState.scrollToItem(0) }
 
     LazyVerticalGrid(
         state = listState,
@@ -393,7 +389,7 @@ private fun PreviewHomeScreenLinear() {
         listSortType = ListSortType.TOTAL_TRADE,
         coinData = dummyCoinDataRO,
         updateSortType = { _, _ -> },
-        navigateToCoinDetail = {}
+        onCoinClicked = {}
     )
 }
 
@@ -428,7 +424,7 @@ private fun PreviewHomeScreenGrid() {
         listSortType = ListSortType.TOTAL_TRADE,
         coinData = dummyCoinDataRO,
         updateSortType = { _, _ -> },
-        navigateToCoinDetail = {}
+        onCoinClicked = {}
     )
 }
 
