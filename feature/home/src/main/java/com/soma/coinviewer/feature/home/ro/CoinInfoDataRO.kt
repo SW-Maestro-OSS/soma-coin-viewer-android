@@ -37,12 +37,12 @@ internal fun CoinInfoData.toRO(
     return CoinInfoDataRO(
         symbol = symbol,
         totalTradedQuoteAssetVolume = formatCurrency(
-            totalTradedQuoteAssetVolume * exchangeRate,
-            currency
+            value = totalTradedQuoteAssetVolume * exchangeRate,
+            currency = currency
         ),
         price = formatCurrency(
-            price * exchangeRate,
-            currency
+            value = price * exchangeRate,
+            currency = currency
         ),
         priceChangePercent = formattedTextPriceChange,
         coinIconUrl = coinIconUrl

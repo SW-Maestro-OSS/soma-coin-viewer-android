@@ -12,7 +12,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.soma.coinviewer.common_ui.repeatOnStarted
 import com.soma.coinviewer.i18n.I18NEvent
 import com.soma.coinviewer.i18n.I18NHelper
-import com.soma.coinviewer.navigation.NavigationTarget
+import com.soma.coinviewer.navigation.NavigationEvent
+import com.soma.coinviewer.navigation.NavigationHelper
 import com.soma.coinviewer.navigation.deepLinkNavigateTo
 import com.soma.coinviewer.presentation.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,6 +36,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var i18NHelper: I18NHelper
 
+    @Inject
+    lateinit var navigationHelper: NavigationHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -42,11 +46,12 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnStarted {
-                i18NHelper.i18NEventBus.receiveAsFlow().collect {
-                    when (it) {
-                        I18NEvent.UpdateLanguage -> updateLanguage(isColdStart = false)
+                i18NHelper.i18NEventBus.receiveAsFlow()
+                    .collect {
+                        when (it) {
+                            I18NEvent.UpdateLanguage -> updateLanguage(isColdStart = false)
+                        }
                     }
-                }
             }
 
             updateLanguage(isColdStart = true)
@@ -84,19 +89,28 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeViewModel() = viewModel.apply {
         repeatOnStarted {
-            navigationFlow.collect { handleNavigationEvent(it) }
+            navigationHelper.navigationFlow
+                .collect { handleNavigationEvent(it) }
         }
+
         repeatOnStarted {
-            errorFlow.collect { handleError(it) }
+            errorHelper.errorFlow
+                .collect { handleError(it) }
         }
     }
 
-    private fun handleNavigationEvent(navigationTarget: NavigationTarget) {
-        navController.deepLinkNavigateTo(
-            context = this@MainActivity,
-            deepLinkRoute = navigationTarget.destination,
-            popUpTo = navigationTarget.popUpTo
-        )
+    private fun handleNavigationEvent(navigationEvent: NavigationEvent) {
+        when (navigationEvent) {
+            is NavigationEvent.To -> {
+                navController.deepLinkNavigateTo(
+                    context = this@MainActivity,
+                    deepLinkRoute = navigationEvent.destination,
+                    popUpTo = navigationEvent.popUpTo
+                )
+            }
+
+            NavigationEvent.Up -> navController.navigateUp()
+        }
     }
 
     private fun handleError(throwable: Throwable) {
@@ -106,6 +120,10 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun updateLanguage(isColdStart: Boolean) {
         val region = i18NHelper.getRegion()
+            .getOrElse {
+                viewModel.errorHelper.sendError(it)
+                return
+            }
         val language = region.language
 
         val config = resources.configuration

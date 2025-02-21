@@ -1,7 +1,7 @@
 package com.soma.coinviewer.data.network.di
 
 import com.soma.coinviewer.data.BuildConfig
-import com.soma.coinviewer.data.network.api.OpenApi
+import com.soma.coinviewer.data.network.api.ExchangeRateApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,7 +35,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideWebSocket(): Request {
+    fun provideWebSocketRequest(): Request {
         return Request.Builder()
             .url(BINANCE_STREAM_BASE_URL)
             .build()
@@ -43,10 +43,10 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOpenApi(okHttpClient: OkHttpClient): OpenApi = Retrofit.Builder()
+    fun provideOpenApi(okHttpClient: OkHttpClient): ExchangeRateApi = Retrofit.Builder()
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .baseUrl(OPEN_API_BASE_URL)
         .build()
-        .create(OpenApi::class.java)
+        .create(ExchangeRateApi::class.java)
 }

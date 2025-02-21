@@ -8,12 +8,17 @@ import javax.inject.Singleton
 
 @Singleton
 class NavigationHelper @Inject constructor() {
-    private val _navigationFlow = Channel<NavigationTarget>(BUFFERED)
+    private val _navigationFlow = Channel<NavigationEvent>(BUFFERED)
     val navigationFlow = _navigationFlow.receiveAsFlow()
 
-    fun navigateTo(navigationTarget: NavigationTarget) {
+    fun navigate(navigationTarget: NavigationEvent) {
         _navigationFlow.trySend(navigationTarget)
     }
 }
 
-data class NavigationTarget(val destination: DeepLinkRoute, val popUpTo: Int? = null)
+sealed class NavigationEvent {
+    data class To(val destination: DeepLinkRoute, val popUpTo: Int? = null) :
+        NavigationEvent()
+
+    data object Up : NavigationEvent()
+}

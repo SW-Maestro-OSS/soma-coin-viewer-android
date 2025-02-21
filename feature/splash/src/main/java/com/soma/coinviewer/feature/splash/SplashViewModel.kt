@@ -10,10 +10,9 @@ import com.soma.coinviewer.i18n.SelectedRegion
 import com.soma.coinviewer.i18n.USDCurrency
 import com.soma.coinviewer.i18n.koreanCurrency
 import com.soma.coinviewer.navigation.DeepLinkRoute
+import com.soma.coinviewer.navigation.NavigationEvent.To
 import com.soma.coinviewer.navigation.NavigationHelper
-import com.soma.coinviewer.navigation.NavigationTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -23,7 +22,6 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val exchangeRateRepository: ExchangeRateRepository,
     private val i18NHelper: I18NHelper,
-    private val exceptionHandler: CoroutineExceptionHandler,
     private val navigationHelper: NavigationHelper,
 ) : BaseViewModel() {
 
@@ -36,8 +34,8 @@ class SplashViewModel @Inject constructor(
             exchangeRateJob.join()
             regionInitJob.join()
 
-            navigationHelper.navigateTo(
-                NavigationTarget(
+            navigationHelper.navigate(
+                To(
                     destination = DeepLinkRoute.Home,
                     popUpTo = R.id.splashFragment
                 )
@@ -45,14 +43,13 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    private fun getExchangeRate() = viewModelScope.launch(exceptionHandler) {
+    private fun getExchangeRate() = viewModelScope.launch {
         exchangeRateRepository.updateExchangeRate()
     }
 
-    private fun initializeRegion() = viewModelScope.launch(exceptionHandler) {
-        val selectedRegion = runCatching {
-            i18NHelper.getRegion()
-        }.getOrDefault(getCurrentRegion())
+    private fun initializeRegion() = viewModelScope.launch {
+        val selectedRegion = i18NHelper.getRegion()
+            .getOrDefault(getCurrentRegion())
 
         i18NHelper.saveRegion(selectedRegion)
     }

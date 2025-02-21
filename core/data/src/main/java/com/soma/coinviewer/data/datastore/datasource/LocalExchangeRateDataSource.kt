@@ -20,7 +20,7 @@ class LocalExchangeRateDataSource @Inject constructor(
         ) { it.stripTrailingZeros().toPlainString() }
     }
 
-    fun getExchangeRate(currencyCode: String): Flow<BigDecimal> {
+    fun retrieveExchangeRate(currencyCode: String): Flow<BigDecimal> {
         return dataStore.getPreference(
             stringPreferencesKey(EXCHANGE_RATE_PREFERENCE_KEY + currencyCode)
         ) { data ->

@@ -2,6 +2,7 @@ package com.soma.coinviewer.feature.setting
 
 import androidx.lifecycle.viewModelScope
 import com.soma.coinviewer.common_ui.base.BaseViewModel
+import com.soma.coinviewer.domain.model.exception.ErrorHelper
 import com.soma.coinviewer.domain.preferences.HowToShowSymbols
 import com.soma.coinviewer.domain.repository.SettingRepository
 import com.soma.coinviewer.i18n.Currency
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class SettingViewModel @Inject constructor(
     private val settingRepository: SettingRepository,
     private val i18NHelper: I18NHelper,
+    private val errorHelper: ErrorHelper,
 ) : BaseViewModel() {
     private val _isPriceCurrencyWon = MutableStateFlow(false)
     val isPriceCurrencyWon = _isPriceCurrencyWon.asStateFlow()
@@ -55,33 +57,39 @@ class SettingViewModel @Inject constructor(
         saveHowToShowSymbols(setting)
     }
 
-    private fun loadSettings() {
-        viewModelScope.launch {
-            val region = i18NHelper.getRegion()
-            _isPriceCurrencyWon.value = (region.currency == koreanCurrency)
-            _isLanguageKorean.value = (region.language == Locale.KOREAN)
+    private fun loadSettings() = viewModelScope.launch {
+        launch {
+            i18NHelper.getRegion()
+                .onSuccess { region ->
+                    _isPriceCurrencyWon.value = (region.currency == koreanCurrency)
+                    _isLanguageKorean.value = (region.language == Locale.KOREAN)
+                }.onFailure { errorHelper.sendError(it) }
+        }
 
-            val howToShowSymbols = settingRepository.getHowToShowSymbols()
-            _isSymbolGrid.value = (howToShowSymbols == HowToShowSymbols.GRID2X2)
+        launch {
+            settingRepository.getHowToShowSymbols()
+                .onSuccess { _isSymbolGrid.value = (it == HowToShowSymbols.GRID2X2) }
+                .onFailure { errorHelper.sendError(it) }
         }
     }
 
     private fun savePriceCurrencyUnit(currency: Currency) = viewModelScope.launch {
-        val region = i18NHelper.getRegion()
-
-        if (region.currency == currency) return@launch
-
-        i18NHelper.saveRegion(region.copy(currency = currency))
+        i18NHelper.getRegion()
+            .onSuccess { region ->
+                if (region.currency == currency) return@launch
+                i18NHelper.saveRegion(region.copy(currency = currency))
+            }.onFailure { errorHelper.sendError(it) }
     }
 
     private fun saveLanguage(locale: Locale) = viewModelScope.launch {
-        val region = i18NHelper.getRegion()
+        i18NHelper.getRegion()
+            .onSuccess { region ->
+                if (region.language == locale) return@launch
 
-        if (region.language == locale) return@launch
-
-        i18NHelper.saveRegion(region.copy(language = locale))
-        delay(500L)
-        i18NHelper.i18NEventBus.send(I18NEvent.UpdateLanguage)
+                i18NHelper.saveRegion(region.copy(language = locale))
+                delay(500L)
+                i18NHelper.i18NEventBus.send(I18NEvent.UpdateLanguage)
+            }.onFailure { errorHelper.sendError(it) }
     }
 
     private fun saveHowToShowSymbols(setting: HowToShowSymbols) = viewModelScope.launch {

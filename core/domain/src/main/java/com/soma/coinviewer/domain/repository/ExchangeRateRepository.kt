@@ -3,6 +3,6 @@ package com.soma.coinviewer.domain.repository
 import java.math.BigDecimal
 
 interface ExchangeRateRepository {
-    suspend fun updateExchangeRate()
-    suspend fun getExchangeRate(currencyCode: String): BigDecimal
+    suspend fun updateExchangeRate(): Result<Unit>
+    suspend fun getExchangeRate(currencyCode: String): Result<BigDecimal>
 }

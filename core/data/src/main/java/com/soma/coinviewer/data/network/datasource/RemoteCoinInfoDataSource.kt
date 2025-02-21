@@ -8,18 +8,18 @@ import okhttp3.Request
 import okhttp3.WebSocket
 import javax.inject.Inject
 
-class CoinInfoDataSource @Inject constructor(
+class RemoteCoinInfoDataSource @Inject constructor(
     private val okHttpClient: OkHttpClient,
     private val request: Request,
     private val binanceListener: BinanceListener,
 ) {
     private var webSocket: WebSocket? = null
 
-    fun connect() {
+    fun connect() = runCatching {
         webSocket = okHttpClient.newWebSocket(request, binanceListener)
     }
 
-    fun disconnect() {
+    fun disconnect() = runCatching {
         webSocket?.close(1000, "Close Binance")
         webSocket = null
     }
